@@ -5,20 +5,6 @@
   "installCommand": "npm install",
   "framework": "vite",
   "regions": ["bom1"],
-  "env": {
-    "VITE_GOOGLE_CLIENT_ID": "@vite_google_client_id",
-    "VITE_GOOGLE_CLIENT_SECRET": "@vite_google_client_secret",
-    "VITE_GOOGLE_REFRESH_TOKEN": "@vite_google_refresh_token",
-    "VITE_SPREADSHEET_ID": "@vite_spreadsheet_id"
-  },
-  "build": {
-    "env": {
-      "VITE_GOOGLE_CLIENT_ID": "@vite_google_client_id",
-      "VITE_GOOGLE_CLIENT_SECRET": "@vite_google_client_secret",
-      "VITE_GOOGLE_REFRESH_TOKEN": "@vite_google_refresh_token",
-      "VITE_SPREADSHEET_ID": "@vite_spreadsheet_id"
-    }
-  },
   "headers": [
     {
       "source": "/assets/(.*)",
