@@ -1,0 +1,39 @@
+# Development files
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules
+
+# Build files (will be rebuilt on Vercel)
+dist
+dist-ssr
+
+# Editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git files
+.git
+.gitignore
+
+# Documentation (not needed for deployment)
+*.md
+!README.md
+
+# Test files (if any)
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# Local configuration
+.editorconfig

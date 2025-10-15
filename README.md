@@ -165,11 +165,40 @@ expirations-manager-2025/
 ## 📝 Scripts
 
 ```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run preview      # Preview production build
-npm run lint         # Run ESLint
+npm run dev              # Start development server
+npm run build            # Build for production
+npm run preview          # Preview production build
+npm run lint             # Run ESLint
+npm run deploy           # Deploy to Vercel (production)
+npm run deploy:preview   # Deploy to Vercel (preview)
 ```
+
+## 🚀 Deployment
+
+This app is optimized for deployment on **Vercel** with advanced configurations.
+
+### Quick Deploy to Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Jimmeey2323/expirations-manager-2025)
+
+**Or follow the detailed guide**: See [VERCEL_DEPLOY.md](./VERCEL_DEPLOY.md) for comprehensive deployment instructions.
+
+### Deployment Features
+- ✅ Automatic deployments on Git push
+- ✅ Preview deployments for pull requests
+- ✅ Edge network distribution
+- ✅ Optimized build configuration
+- ✅ Environment variable management
+- ✅ SSL/HTTPS by default
+- ✅ Mumbai region (BOM1) optimization
+
+### Prerequisites for Deployment
+1. Vercel account (free tier available)
+2. GitHub repository (already set up)
+3. Environment variables configured
+4. Google OAuth credentials
+
+See [DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md) for a complete pre-deployment checklist.
 
 ## 📞 Support
 
