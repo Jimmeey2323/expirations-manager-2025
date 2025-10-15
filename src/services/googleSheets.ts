@@ -22,6 +22,11 @@ class GoogleSheetsService {
 
       this.accessToken = response.data.access_token;
       this.tokenExpiry = Date.now() + (response.data.expires_in - 300) * 1000; // 5 min buffer
+      
+      if (!this.accessToken) {
+        throw new Error('Failed to obtain access token');
+      }
+      
       return this.accessToken;
     } catch (error) {
       console.error('Failed to refresh access token:', error);
