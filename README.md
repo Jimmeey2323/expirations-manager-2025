@@ -1,247 +1,180 @@
-# Expirations Manager 2025
+# Expirations Manager 2025 🎯
 
-A modern, feature-rich web application for tracking and managing offer expirations with Google Sheets integration.
+A modern, feature-rich web application for tracking and managing membership expirations with Google Sheets integration. Built with React, TypeScript, and Tailwind CSS.
 
-## Features
+![React](https://img.shields.io/badge/React-18.2-blue)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)
+![Vite](https://img.shields.io/badge/Vite-5.0-purple)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-cyan)
 
-- 🔄 **Google Sheets Integration**: Seamlessly sync with your Google Spreadsheet
-- 📊 **Advanced DataTable**: Sortable columns, pagination, column visibility controls
-- 🎯 **Smart Filtering**: Comprehensive filter panel with multiple criteria
-- 🏷️ **Flexible Annotations**: Add notes, comments, tags, and custom fields
-- 👥 **Associate Management**: Track who's handling each expiration
-- 📅 **Follow-up Dates**: Schedule and track follow-ups
-- 🎨 **Modern UI**: Beautiful, responsive design with Tailwind CSS
-- 📱 **Responsive**: Works seamlessly on desktop and mobile devices
-- 🔍 **Multi-Grouping**: Group data by 6+ different criteria
-- 💾 **Persistent Storage**: Notes saved separately, never lost on sheet refresh
+## ✨ Features
 
-## Architecture
+### Core Functionality
+- 📊 **Google Sheets Integration** - Direct sync with Google Sheets for real-time data
+- 🔍 **Advanced Search** - Real-time search by name, email, membership, or member ID
+- 📅 **Period Filters** - Quick filters for expirations in next 7, 30, or 90 days
+- 🏢 **Location Tabs** - Filter by different office locations
+- 📝 **Detailed Member Profiles** - Comprehensive view with follow-ups, notes, and remarks
+- 🎨 **Modern UI** - Beautiful gradients, smooth animations, and professional design
+- ⚡ **Auto-Priority** - Automatic priority calculation based on expiration dates
+- 🔄 **Real-time Updates** - Live data synchronization with Google Sheets
 
-### Data Structure
+### User Experience
+- 🎯 **Smart Filtering** - Combine multiple filters (location, date range, priority, tags)
+- 📱 **Responsive Design** - Works seamlessly on desktop, tablet, and mobile
+- 🌈 **Visual Indicators** - Color-coded badges for status, priority, and membership
+- 💾 **Auto-save** - Automatic saving of notes and follow-ups
+- 🔔 **Visual Feedback** - Loading states, error messages, and success confirmations
 
-The app uses two Google Sheets:
-
-1. **Expirations Sheet** (Read-only)
-   - Contains the core expiration data
-   - Refreshes every 15 minutes
-   - Fields: Offer Name, Description, Applicable On, Ideal For, Suggested Quantity
-
-2. **Notes Sheet** (Read/Write)
-   - Stores all user annotations
-   - Maps to expirations via unique IDs
-   - Fields: Associate Name, Follow-up Date, Status, Priority, Comments, Remarks, Tags, Custom Fields
-
-### Technology Stack
-
-- **Frontend**: React 18 + TypeScript
-- **Build Tool**: Vite
-- **Styling**: Tailwind CSS
-- **State Management**: Zustand
-- **Table**: TanStack Table (React Table v8)
-- **Icons**: Lucide React
-- **Date Handling**: date-fns
-- **API**: Google Sheets API v4
-
-## Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-
 - Node.js 18+ and npm
 - Google Cloud Project with Sheets API enabled
-- OAuth 2.0 credentials (already configured)
+- Google OAuth 2.0 credentials
 
 ### Installation
 
-1. Install dependencies:
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Jimmeey2323/expirations-manager-2025.git
+   cd expirations-manager-2025
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   
+   Copy the example environment file:
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Edit `.env` and add your credentials:
+   ```env
+   VITE_GOOGLE_CLIENT_ID=your_client_id_here
+   VITE_GOOGLE_CLIENT_SECRET=your_client_secret_here
+   VITE_GOOGLE_REFRESH_TOKEN=your_refresh_token_here
+   VITE_SPREADSHEET_ID=your_spreadsheet_id_here
+   ```
+
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+   
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 🔐 Google Sheets Setup
+
+### Step 1: Create Google Cloud Project
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select an existing one
+3. Enable the **Google Sheets API**
+
+### Step 2: Create OAuth 2.0 Credentials
+1. Go to **APIs & Services** > **Credentials**
+2. Click **Create Credentials** > **OAuth client ID**
+3. Choose **Web application**
+4. Add authorized redirect URIs:
+   - `http://localhost:3000`
+   - Your production URL (if applicable)
+5. Download the credentials JSON
+
+### Step 3: Get Refresh Token
+1. Use the OAuth 2.0 Playground or a script to get a refresh token
+2. Add the refresh token to your `.env` file
+
+### Step 4: Prepare Your Spreadsheet
+Your Google Sheet should have two sheets:
+
+**Expirations Sheet** (columns A-P):
+- A: Unique ID
+- B: First Name
+- C: Last Name
+- D: Email
+- E: Phone
+- F: Home Location
+- G: Membership Name
+- H: Member ID
+- I: Start Date
+- J: End Date
+- K: Order At
+- L: Service Tax
+- M: Total Amount
+- N: Membership Value
+- O: Status
+- P: Associate Name
+
+**Notes Sheet**:
+- Automatically created for storing follow-ups and notes
+
+## 📁 Project Structure
+
+```
+expirations-manager-2025/
+├── src/
+│   ├── components/         # React components
+│   ├── config/            # Configuration files
+│   ├── constants/         # App constants
+│   ├── services/          # API services
+│   ├── store/             # State management
+│   ├── types/             # TypeScript types
+│   ├── utils/             # Utility functions
+│   └── App.tsx            # Main app component
+├── .env.example           # Environment variables template
+├── package.json           # Dependencies
+└── README.md             # This file
+```
+
+## 🎨 Features in Detail
+
+### Search & Filtering
+- **Real-time Search**: Instantly filter by name, email, membership, or member ID
+- **Period Filters**: Quick access to expirations in 7, 30, or 90 days
+- **Location Tabs**: Filter by Kenkere House, Kwality House, Supreme HQ, or All
+- **Advanced Filters**: Date ranges, priorities, stages, statuses, associates, and tags
+- **Group By**: Organize data by priority, status, or location
+
+### Member Management
+- **Detailed Profiles**: View complete member information
+- **Follow-up Tracking**: Record and view all follow-up conversations
+- **Notes System**: Add internal notes and public remarks
+- **Tag Organization**: Categorize members with custom tags
+- **Status Tracking**: Monitor payment status and membership stages
+
+### Priority System
+- 🔴 **High Priority**: Expires in < 30 days
+- 🟡 **Medium Priority**: Expires in 31-90 days
+- 🟢 **Low Priority**: Expires in > 90 days
+
+## 🛠️ Tech Stack
+
+- **Frontend Framework**: React 18.2
+- **Language**: TypeScript 5.3
+- **Build Tool**: Vite 5.0
+- **Styling**: Tailwind CSS 3.4
+- **State Management**: Zustand 4.5
+- **Date Handling**: date-fns 3.3
+- **Icons**: Lucide React 0.344
+- **API**: Google Sheets API v4
+
+## 📝 Scripts
+
 ```bash
-npm install
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run lint         # Run ESLint
 ```
 
-2. Start the development server:
-```bash
-npm run dev
-```
+## 📞 Support
 
-3. Open your browser to `http://localhost:3000`
+For support, please contact the development team or open an issue in the repository.
 
-### Building for Production
+---
 
-```bash
-npm run build
-npm run preview
-```
-
-## Configuration
-
-The Google Sheets configuration is in `src/config/google.ts`:
-
-```typescript
-export const GOOGLE_CONFIG = {
-  CLIENT_ID: "...",
-  CLIENT_SECRET: "...",
-  REFRESH_TOKEN: "...",
-  TOKEN_URL: "https://oauth2.googleapis.com/token"
-};
-
-export const SPREADSHEET_ID = "1rGMDDvvTbZfNg1dueWtRN3LhOgGQOdLg3Fd7Sn1GCZo";
-export const EXPIRATIONS_SHEET = "Expirations";
-export const NOTES_SHEET = "Notes";
-```
-
-## Usage
-
-### First Time Setup
-
-1. Click **"Init Notes Sheet"** in the header to create the Notes sheet structure
-2. Click **"Refresh Data"** to load expirations from your spreadsheet
-
-### Managing Expirations
-
-1. **View**: Browse expirations in the table view
-2. **Filter**: Click the Filter button to show/hide advanced filters
-3. **Group**: Use the grouping buttons to organize data by different criteria
-4. **Details**: Click any row to open the detail modal
-5. **Edit**: Add notes, tags, dates, and other annotations
-6. **Save**: Changes are automatically synced to the Notes sheet
-
-### Grouping Options
-
-- None (default table view)
-- By Offer Name
-- By Applicable On
-- By Ideal For
-- By Status
-- By Priority
-- By Associate
-
-### Column Visibility
-
-Toggle which columns to display using the checkboxes above the table.
-
-### Pagination
-
-- Choose rows per page: 10, 25, 50, or 100
-- Navigate with page controls at the bottom
-
-## Features in Detail
-
-### Filter Panel (Collapsible)
-
-- Offer Name search
-- Applicable On dropdown
-- Ideal For dropdown
-- Status filter
-- Priority filter
-- Associate Name filter
-- Follow-up date range
-
-### Detail Modal
-
-**Read-only Expiration Info:**
-- Offer Name
-- Description
-- Applicable On
-- Ideal For
-- Suggested Quantity
-
-**Editable Annotations:**
-- Status (Active, Pending, Completed, Cancelled)
-- Priority (High, Medium, Low)
-- Associate Name
-- Follow-up Date
-- Comments (multi-line)
-- Remarks (multi-line)
-- Tags (add/remove multiple)
-- Timestamps (Created/Updated)
-
-### Status Badges
-
-Color-coded, uniform-sized badges:
-- Active: Green
-- Pending: Yellow
-- Completed: Blue
-- Cancelled: Red
-
-### Priority Badges
-
-Color-coded, uniform-sized badges:
-- High: Red
-- Medium: Yellow
-- Low: Blue
-
-## Development
-
-### Project Structure
-
-```
-src/
-├── components/
-│   ├── Badge.tsx           # Status & priority badges
-│   ├── DataTable.tsx       # Advanced table component
-│   ├── DetailModal.tsx     # Row detail modal
-│   ├── FilterPanel.tsx     # Collapsible filter section
-│   └── Modal.tsx           # Reusable modal wrapper
-├── config/
-│   └── google.ts           # Google Sheets config
-├── services/
-│   └── googleSheets.ts     # Google Sheets API service
-├── store/
-│   └── useAppStore.ts      # Zustand state management
-├── types/
-│   └── index.ts            # TypeScript interfaces
-├── utils/
-│   └── dataHelpers.ts      # Filter & grouping utilities
-├── App.tsx                 # Main app component
-├── main.tsx                # Entry point
-└── index.css               # Global styles
-```
-
-### Key Components
-
-- **useAppStore**: Centralized state management with Zustand
-- **googleSheetsService**: Handles OAuth and API calls
-- **DataTable**: Feature-rich table with TanStack Table
-- **FilterPanel**: Advanced filtering with real-time updates
-- **DetailModal**: Comprehensive edit interface
-
-## API Integration
-
-The app uses Google Sheets API v4 with OAuth 2.0:
-
-1. **Token Refresh**: Automatically refreshes access tokens
-2. **Read Expirations**: Fetches from Expirations sheet (range A:E)
-3. **Read Notes**: Fetches from Notes sheet (range A:Z)
-4. **Write Notes**: Appends or updates rows in Notes sheet
-5. **Delete Notes**: Clears note rows
-
-## Best Practices
-
-- Never edit the Expirations sheet data (read-only)
-- All user data goes in the Notes sheet
-- Notes are mapped by unique expiration IDs
-- Regular refreshes keep data in sync
-- Tags and custom fields support extensibility
-
-## Troubleshooting
-
-### Authentication Errors
-- Check if credentials are valid
-- Verify Sheets API is enabled in Google Cloud Console
-- Ensure spreadsheet is accessible with the service account
-
-### Data Not Loading
-- Click "Refresh Data" button
-- Check browser console for errors
-- Verify spreadsheet ID and sheet names
-
-### Notes Not Saving
-- Ensure Notes sheet exists (click "Init Notes Sheet")
-- Check write permissions on the spreadsheet
-
-## License
-
-MIT
-
-## Support
-
-For issues or questions, please open an issue on GitHub.
+Made with ❤️ by Jimmey
