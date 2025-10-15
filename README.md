@@ -206,4 +206,4 @@ For support, please contact the development team or open an issue in the reposit
 
 ---
 
-Made with ❤️ by Jimmey
+Made with ❤️ by Jimmeey
