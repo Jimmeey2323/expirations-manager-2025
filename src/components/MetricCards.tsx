@@ -77,10 +77,8 @@ export const MetricCards: React.FC<MetricCardsProps> = ({ data }) => {
       title: 'Lapsed This Month',
       value: metrics.lapsedThisMonth,
       icon: TrendingDown,
-      gradient: 'from-red-500 to-red-600',
-      bgLight: 'bg-red-50',
-      textColor: 'text-red-700',
-      iconBg: 'bg-red-100',
+      gradient: 'from-red-500 to-pink-500',
+      iconColor: 'text-red-600',
     },
     {
       title: 'Upcoming Renewals',
@@ -88,36 +86,28 @@ export const MetricCards: React.FC<MetricCardsProps> = ({ data }) => {
       value: metrics.upcomingRenewals,
       icon: Clock,
       gradient: 'from-yellow-500 to-orange-500',
-      bgLight: 'bg-yellow-50',
-      textColor: 'text-yellow-700',
-      iconBg: 'bg-yellow-100',
+      iconColor: 'text-orange-600',
     },
     {
       title: 'Lapsed Last Month',
       value: metrics.lapsedLastMonth,
       icon: AlertCircle,
-      gradient: 'from-orange-500 to-orange-600',
-      bgLight: 'bg-orange-50',
-      textColor: 'text-orange-700',
-      iconBg: 'bg-orange-100',
+      gradient: 'from-orange-500 to-red-500',
+      iconColor: 'text-orange-600',
     },
     {
       title: 'Lapsed This Quarter',
       value: metrics.lapsedThisQuarter,
       icon: Calendar,
-      gradient: 'from-purple-500 to-purple-600',
-      bgLight: 'bg-purple-50',
-      textColor: 'text-purple-700',
-      iconBg: 'bg-purple-100',
+      gradient: 'from-purple-500 to-pink-500',
+      iconColor: 'text-purple-600',
     },
     {
       title: 'Upcoming Next Month',
       value: metrics.upcomingNextMonth,
       icon: CalendarClock,
-      gradient: 'from-blue-500 to-blue-600',
-      bgLight: 'bg-blue-50',
-      textColor: 'text-blue-700',
-      iconBg: 'bg-blue-100',
+      gradient: 'from-blue-500 to-purple-500',
+      iconColor: 'text-blue-600',
     },
   ];
 
@@ -128,23 +118,23 @@ export const MetricCards: React.FC<MetricCardsProps> = ({ data }) => {
         return (
           <div
             key={index}
-            className={`${card.bgLight} rounded-xl p-5 border-2 border-${card.textColor.replace('text-', '')}-200 shadow-sm hover:shadow-md transition-all`}
+            className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all border border-gray-100"
           >
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-600 mb-1">
-                  {card.title}
-                </p>
-                {card.subtitle && (
-                  <p className="text-xs text-gray-500 mb-2">{card.subtitle}</p>
-                )}
-                <p className={`text-3xl font-bold bg-gradient-to-r ${card.gradient} bg-clip-text text-transparent`}>
-                  {card.value}
-                </p>
+            <div className="flex items-center justify-between mb-2">
+              <div className={`p-2 rounded-lg bg-gradient-to-br ${card.gradient} bg-opacity-10`}>
+                <Icon className={card.iconColor} size={20} />
               </div>
-              <div className={`${card.iconBg} p-3 rounded-xl`}>
-                <Icon className={card.textColor} size={24} />
-              </div>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-gray-600 mb-1">
+                {card.title}
+              </p>
+              {card.subtitle && (
+                <p className="text-xs text-gray-400 mb-1">{card.subtitle}</p>
+              )}
+              <p className={`text-2xl font-bold bg-gradient-to-r ${card.gradient} bg-clip-text text-transparent`}>
+                {card.value}
+              </p>
             </div>
           </div>
         );
