@@ -241,6 +241,36 @@ export const DataTable: React.FC<DataTableProps> = ({
           </div>
         ),
       },
+      {
+        accessorKey: 'notes.followUps',
+        header: 'Latest Follow-up',
+        cell: ({ row }) => {
+          const followUps = row.original.notes?.followUps || [];
+          if (followUps.length === 0) return <span className="text-gray-400">-</span>;
+          
+          // Sort by date descending to get the latest
+          const sortedFollowUps = [...followUps].sort((a, b) => 
+            new Date(b.date).getTime() - new Date(a.date).getTime()
+          );
+          const latest = sortedFollowUps[0];
+          
+          return (
+            <div className="text-sm">
+              <div className="flex items-center gap-2">
+                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">
+                  {followUps.length} {followUps.length === 1 ? 'comment' : 'comments'}
+                </span>
+              </div>
+              <div className="text-gray-600 mt-1 max-w-xs truncate" title={latest.comment}>
+                {latest.comment}
+              </div>
+              <div className="text-xs text-gray-400 mt-0.5">
+                {formatDateIST(latest.date)} • {latest.associateName || 'Unknown'}
+              </div>
+            </div>
+          );
+        },
+      },
     ],
     []
   );
