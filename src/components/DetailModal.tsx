@@ -192,8 +192,8 @@ export const DetailModal: React.FC = () => {
   ];
 
   return (
-    <Modal isOpen={isDetailModalOpen} onClose={closeDetailModal} size="xl">
-      <div className="flex flex-col h-full max-h-[90vh]">
+    <Modal isOpen={isDetailModalOpen} onClose={closeDetailModal} size="lg">
+      <div className="flex flex-col h-full max-h-[95vh]">
         {/* Header */}
         <div className="bg-gradient-to-r from-slate-900 via-gray-900 to-black text-white px-6 py-6 rounded-t-xl">
           <div className="flex items-start justify-between">
