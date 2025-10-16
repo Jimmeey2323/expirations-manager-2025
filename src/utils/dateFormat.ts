@@ -11,7 +11,8 @@ export const formatDateIST = (dateString: string): string => {
     const istDate = new Date(date.getTime() + istOffset);
     
     const day = String(istDate.getUTCDate()).padStart(2, '0');
-    const month = String(istDate.getUTCMonth() + 1).padStart(2, '0');
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = monthNames[istDate.getUTCMonth()];
     const year = istDate.getUTCFullYear();
     
     return `${day}-${month}-${year}`;

@@ -137,9 +137,9 @@ export const DetailModal: React.FC = () => {
   };
 
   const handleAddFollowUp = () => {
-    // Validate Associate Name
-    if (!formData.associateName || formData.associateName.trim() === '') {
-      alert('Please select an Assigned Associate before adding a follow-up.');
+    // Validate Follow-Up Associate Name
+    if (!newFollowUp.associateName || newFollowUp.associateName.trim() === '') {
+      alert('Please select an Associate for this follow-up.');
       return;
     }
 
@@ -153,7 +153,7 @@ export const DetailModal: React.FC = () => {
       const followUpEntry: FollowUpEntry = {
         date: new Date().toISOString().split('T')[0], // Auto-set current date
         comment: newFollowUp.comment,
-        associateName: newFollowUp.associateName || formData.associateName || '',
+        associateName: newFollowUp.associateName,
         contactedOn: newFollowUp.contactedOn,
         timestamp: new Date().toISOString(), // Auto-set current timestamp
       };
@@ -203,7 +203,7 @@ export const DetailModal: React.FC = () => {
 
   return (
     <Modal isOpen={isDetailModalOpen} onClose={closeDetailModal} size="lg">
-      <div className="flex flex-col h-full max-h-[95vh]">
+      <div className="flex flex-col h-full max-h-[98vh]">
         {/* Header */}
         <div className="bg-gradient-to-r from-slate-900 via-gray-900 to-black text-white px-6 py-6 rounded-t-xl">
           <div className="flex items-start justify-between">
@@ -490,11 +490,12 @@ export const DetailModal: React.FC = () => {
                       <p className="text-xs text-gray-500 mt-1">When was the member contacted?</p>
                     </div>
                     <Select
-                      label="Associate"
+                      label="Associate (Required)"
                       value={newFollowUp.associateName || ''}
                       onChange={(value) => setNewFollowUp({ ...newFollowUp, associateName: value })}
                       options={ASSOCIATES}
-                      placeholder="Select associate or leave blank to use assigned"
+                      placeholder="Select associate for this follow-up..."
+                      required
                     />
                     <Textarea
                       label="Follow-Up Comment"
