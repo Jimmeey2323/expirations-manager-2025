@@ -119,19 +119,21 @@ export const MetricCards: React.FC<MetricCardsProps> = ({ data }) => {
             <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-xl`} />
             
             {/* Content */}
-            <div className="relative z-10">
+            <div className="relative z-10 flex flex-col h-full">
               <div className="flex items-center justify-between mb-3">
                 <div className={`p-2.5 rounded-lg bg-gradient-to-br ${card.gradient} shadow-sm`}>
                   <Icon className="text-white" size={20} />
                 </div>
               </div>
-              <div>
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1 h-8">
                   {card.title}
                 </p>
-                {card.subtitle && (
-                  <p className="text-xs text-gray-400 mb-2">{card.subtitle}</p>
-                )}
+                <div className="h-4 mb-2">
+                  {card.subtitle && (
+                    <p className="text-xs text-gray-400">{card.subtitle}</p>
+                  )}
+                </div>
                 <p className={`text-3xl font-bold bg-gradient-to-r ${card.gradient} bg-clip-text text-transparent leading-none`}>
                   {card.value}
                 </p>
