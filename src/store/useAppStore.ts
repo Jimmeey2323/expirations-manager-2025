@@ -106,6 +106,15 @@ export const useAppStore = create<AppState>((set, get) => ({
 
       await googleSheetsService.saveNote(updatedNote);
       await get().fetchData(); // Refresh data
+      
+      // Update selectedExpiration with fresh data from combinedData
+      const { combinedData, selectedExpiration } = get();
+      if (selectedExpiration) {
+        const updatedExpiration = combinedData.find(exp => exp.uniqueId === expirationId);
+        if (updatedExpiration) {
+          set({ selectedExpiration: updatedExpiration });
+        }
+      }
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
@@ -118,6 +127,15 @@ export const useAppStore = create<AppState>((set, get) => ({
     try {
       await googleSheetsService.deleteNote(expirationId);
       await get().fetchData(); // Refresh data
+      
+      // Update selectedExpiration with fresh data from combinedData
+      const { combinedData, selectedExpiration } = get();
+      if (selectedExpiration) {
+        const updatedExpiration = combinedData.find(exp => exp.uniqueId === expirationId);
+        if (updatedExpiration) {
+          set({ selectedExpiration: updatedExpiration });
+        }
+      }
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;
