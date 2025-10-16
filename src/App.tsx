@@ -36,7 +36,7 @@ function App() {
 
   const [activeLocation, setActiveLocation] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [quickFilter, setQuickFilter] = useState<'all' | 'week' | 'month' | 'quarter'>('all');
+  const [quickFilter, setQuickFilter] = useState<'all' | 'next7' | 'next30' | 'past7' | 'past30' | 'thisMonth'>('all');
 
   // Initial data fetch
   useEffect(() => {
@@ -67,17 +67,33 @@ function App() {
     // Apply quick period filter
     if (quickFilter !== 'all') {
       const now = new Date();
+      now.setHours(0, 0, 0, 0); // Start of today
       
       data = data.filter(item => {
         const endDate = new Date(item.endDate);
-        const daysUntilExpiration = Math.ceil((endDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+        endDate.setHours(0, 0, 0, 0); // Start of end date
+        const diffTime = endDate.getTime() - now.getTime();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         
-        if (quickFilter === 'week') {
-          return daysUntilExpiration <= 7;
-        } else if (quickFilter === 'month') {
-          return daysUntilExpiration <= 30;
-        } else if (quickFilter === 'quarter') {
-          return daysUntilExpiration <= 90;
+        if (quickFilter === 'next7') {
+          // Expires in the next 7 days (0 to 7 days from now)
+          return diffDays >= 0 && diffDays <= 7;
+        } else if (quickFilter === 'next30') {
+          // Expires in the next 30 days (0 to 30 days from now)
+          return diffDays >= 0 && diffDays <= 30;
+        } else if (quickFilter === 'past7') {
+          // Expired in the last 7 days (7 days ago to yesterday)
+          return diffDays < 0 && diffDays >= -7;
+        } else if (quickFilter === 'past30') {
+          // Expired in the last 30 days (30 days ago to yesterday)
+          return diffDays < 0 && diffDays >= -30;
+        } else if (quickFilter === 'thisMonth') {
+          // Expires this month
+          const currentMonth = now.getMonth();
+          const currentYear = now.getFullYear();
+          const endMonth = endDate.getMonth();
+          const endYear = endDate.getFullYear();
+          return currentMonth === endMonth && currentYear === endYear;
         }
         return true;
       });
@@ -276,7 +292,7 @@ function App() {
 
             {/* Quick Period Filters */}
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-700">Expiring In:</span>
+              <span className="text-sm font-medium text-gray-700">Quick Filters:</span>
               <button
                 onClick={() => setQuickFilter('all')}
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
@@ -288,19 +304,19 @@ function App() {
                 All Periods
               </button>
               <button
-                onClick={() => setQuickFilter('week')}
+                onClick={() => setQuickFilter('next7')}
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                  quickFilter === 'week'
-                    ? 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-md'
-                    : 'bg-red-50 text-red-700 hover:bg-red-100'
+                  quickFilter === 'next7'
+                    ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md'
+                    : 'bg-green-50 text-green-700 hover:bg-green-100'
                 }`}
               >
                 Next 7 Days
               </button>
               <button
-                onClick={() => setQuickFilter('month')}
+                onClick={() => setQuickFilter('next30')}
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                  quickFilter === 'month'
+                  quickFilter === 'next30'
                     ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-white shadow-md'
                     : 'bg-yellow-50 text-yellow-700 hover:bg-yellow-100'
                 }`}
@@ -308,14 +324,34 @@ function App() {
                 Next 30 Days
               </button>
               <button
-                onClick={() => setQuickFilter('quarter')}
+                onClick={() => setQuickFilter('past7')}
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                  quickFilter === 'quarter'
+                  quickFilter === 'past7'
+                    ? 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-md'
+                    : 'bg-red-50 text-red-700 hover:bg-red-100'
+                }`}
+              >
+                Past 7 Days
+              </button>
+              <button
+                onClick={() => setQuickFilter('past30')}
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                  quickFilter === 'past30'
+                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md'
+                    : 'bg-orange-50 text-orange-700 hover:bg-orange-100'
+                }`}
+              >
+                Past 30 Days
+              </button>
+              <button
+                onClick={() => setQuickFilter('thisMonth')}
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+                  quickFilter === 'thisMonth'
                     ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md'
                     : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
                 }`}
               >
-                Next 90 Days
+                This Month
               </button>
             </div>
           </div>
