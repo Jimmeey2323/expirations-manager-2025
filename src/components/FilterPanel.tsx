@@ -122,7 +122,7 @@ export const FilterPanel: React.FC = () => {
             {/* Member Status */}
             <MultiSelect
               label="Member Status"
-              options={['Active', 'Frozen', 'Expired', 'Cancelled']}
+              options={['Active', 'Frozen', 'Expired', 'Churned']}
               values={localFilters.memberStatus || []}
               onChange={(value) => handleFilterChange('memberStatus', value)}
               placeholder="Select status..."
