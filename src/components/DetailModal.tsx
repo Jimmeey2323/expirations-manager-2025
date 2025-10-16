@@ -91,12 +91,6 @@ export const DetailModal: React.FC = () => {
   if (!selectedExpiration) return null;
 
   const handleSave = async () => {
-    // Validate Associate Name is filled
-    if (!formData.associateName || formData.associateName.trim() === '') {
-      alert('Please select an Assigned Associate before saving.');
-      return;
-    }
-
     // Validate custom reason if "None of the Above" is selected
     if (formData.stage === 'None of the Above') {
       if (!customReason || customReason.trim() === '') {
@@ -414,7 +408,6 @@ export const DetailModal: React.FC = () => {
                       value={formData.associateName || ''}
                       onChange={(value) => setFormData({ ...formData, associateName: value })}
                       placeholder="Select associate..."
-                      required
                     />
                     <div>
                       <Select

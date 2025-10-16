@@ -247,7 +247,7 @@ export const DataTable: React.FC<DataTableProps> = ({
       {
         accessorKey: 'notes.followUps',
         header: 'Follow-ups',
-        size: 120,
+        size: 150,
         enableHiding: false,
         cell: ({ row }) => {
           const followUps = row.original.notes?.followUps || [];
@@ -263,7 +263,7 @@ export const DataTable: React.FC<DataTableProps> = ({
                   setSelectedExpiration(row.original);
                   setFollowUpModalOpen(true);
                 }}
-                className="px-3 py-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-sm font-bold rounded-full hover:from-blue-600 hover:to-purple-600 transition-all shadow-sm hover:shadow-md"
+                className="px-2.5 py-0.5 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-bold rounded-full hover:from-blue-600 hover:to-purple-600 transition-all shadow-sm hover:shadow-md"
               >
                 {followUps.length}
               </button>
