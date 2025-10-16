@@ -244,9 +244,11 @@ export const DataTable: React.FC<DataTableProps> = ({
       {
         accessorKey: 'notes.followUps',
         header: 'Latest Follow-up',
+        size: 300, // Make column wider
+        enableHiding: false, // Prevent hiding this column
         cell: ({ row }) => {
           const followUps = row.original.notes?.followUps || [];
-          if (followUps.length === 0) return <span className="text-gray-400">-</span>;
+          if (followUps.length === 0) return <span className="text-gray-400">No comments</span>;
           
           // Sort by date descending to get the latest
           const sortedFollowUps = [...followUps].sort((a, b) => 
@@ -255,16 +257,16 @@ export const DataTable: React.FC<DataTableProps> = ({
           const latest = sortedFollowUps[0];
           
           return (
-            <div className="text-sm">
-              <div className="flex items-center gap-2">
+            <div className="text-sm min-w-[250px]">
+              <div className="flex items-center gap-2 mb-1">
                 <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">
                   {followUps.length} {followUps.length === 1 ? 'comment' : 'comments'}
                 </span>
               </div>
-              <div className="text-gray-600 mt-1 max-w-xs truncate" title={latest.comment}>
+              <div className="text-gray-900 font-medium max-w-xs truncate" title={latest.comment}>
                 {latest.comment}
               </div>
-              <div className="text-xs text-gray-400 mt-0.5">
+              <div className="text-xs text-gray-500 mt-1">
                 {formatDateIST(latest.date)} • {latest.associateName || 'Unknown'}
               </div>
             </div>
