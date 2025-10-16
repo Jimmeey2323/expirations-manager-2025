@@ -65,8 +65,8 @@ export const MemberStatusBadge: React.FC<{ status?: string; size?: 'sm' | 'md' |
   const variant = 
     status.toLowerCase() === 'active' ? 'success' :
     status.toLowerCase() === 'frozen' ? 'info' :
-    status.toLowerCase() === 'expired' ? 'danger' :
-    status.toLowerCase() === 'churned' ? 'orange' : 'default';
+    status.toLowerCase() === 'expired' ? 'orange' :
+    status.toLowerCase() === 'churned' ? 'danger' : 'default';
   
   return <Badge variant={variant} size={size}>{status}</Badge>;
 };
