@@ -23,6 +23,7 @@ export interface FollowUpEntry {
   date: string;
   comment: string;
   associateName?: string;
+  contactedOn?: string; // Datetime when the member was contacted
   timestamp?: string;
 }
 

@@ -27,7 +27,7 @@ import { Select } from './Select';
 import { Button } from './Button';
 import { Card, CardHeader, CardBody } from './Card';
 
-type TabType = 'info' | 'followups' | 'notes';
+type TabType = 'info' | 'followups' | 'notes' | 'tracking';
 
 export const DetailModal: React.FC = () => {
   const { selectedExpiration, isDetailModalOpen, closeDetailModal, saveNote, deleteNote } = useAppStore();
@@ -48,6 +48,7 @@ export const DetailModal: React.FC = () => {
     date: new Date().toISOString().split('T')[0],
     comment: '',
     associateName: '',
+    contactedOn: '',
   });
 
   const [newTag, setNewTag] = useState('');
@@ -142,11 +143,18 @@ export const DetailModal: React.FC = () => {
       return;
     }
 
+    // Validate Contacted On datetime
+    if (!newFollowUp.contactedOn || newFollowUp.contactedOn.trim() === '') {
+      alert('Please select the "Contacted On" date and time.');
+      return;
+    }
+
     if (newFollowUp.comment?.trim()) {
       const followUpEntry: FollowUpEntry = {
         date: new Date().toISOString().split('T')[0], // Auto-set current date
         comment: newFollowUp.comment,
         associateName: newFollowUp.associateName || formData.associateName || '',
+        contactedOn: newFollowUp.contactedOn,
         timestamp: new Date().toISOString(), // Auto-set current timestamp
       };
 
@@ -157,6 +165,7 @@ export const DetailModal: React.FC = () => {
 
       setNewFollowUp({
         comment: '',
+        contactedOn: '',
         associateName: '',
       });
     }
@@ -187,6 +196,7 @@ export const DetailModal: React.FC = () => {
 
   const tabs = [
     { id: 'info' as TabType, label: 'Member Info', icon: User },
+    { id: 'tracking' as TabType, label: 'Tracking & Assignment', icon: TrendingUp },
     { id: 'followups' as TabType, label: 'Follow-Ups', icon: MessageSquare, count: formData.followUps?.length || 0 },
     { id: 'notes' as TabType, label: 'Notes & Details', icon: FileText },
   ];
@@ -387,7 +397,12 @@ export const DetailModal: React.FC = () => {
                   </Card>
                 </div>
               </div>
+            </div>
+          )}
 
+          {/* Tracking & Assignment Tab */}
+          {activeTab === 'tracking' && (
+            <div className="space-y-4">
               {/* Tracking & Assignment - Full Width */}
               <Card>
                 <CardHeader icon={<TrendingUp size={20} />} title="Tracking & Assignment" />
@@ -462,6 +477,18 @@ export const DetailModal: React.FC = () => {
                 <CardHeader icon={<Plus size={20} />} title="Add New Follow-Up" />
                 <CardBody>
                   <div className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Contacted On (Required) <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="datetime-local"
+                        value={newFollowUp.contactedOn || ''}
+                        onChange={(e) => setNewFollowUp({ ...newFollowUp, contactedOn: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">When was the member contacted?</p>
+                    </div>
                     <Select
                       label="Associate"
                       value={newFollowUp.associateName || ''}
@@ -478,7 +505,7 @@ export const DetailModal: React.FC = () => {
                     />
                     <div className="flex items-center gap-2 text-xs text-gray-500">
                       <Clock size={14} />
-                      <span>Date and time will be recorded automatically when you add this follow-up</span>
+                      <span>Entry timestamp will be recorded automatically when you add this follow-up</span>
                     </div>
                     <Button onClick={handleAddFollowUp} variant="primary" className="w-full">
                       <Plus size={16} className="mr-2" />

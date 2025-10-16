@@ -26,6 +26,7 @@ import { ExpirationWithNotes } from '../types';
 import { StatusBadge, PriorityBadge, MemberStatusBadge } from './Badge';
 import { formatDateIST } from '../utils/dateFormat';
 import { MultiSelect } from './Select';
+import { FollowUpModal } from './FollowUpModal';
 
 interface DataTableProps {
   data: ExpirationWithNotes[];
@@ -48,6 +49,8 @@ export const DataTable: React.FC<DataTableProps> = ({
     frozen: false,
     paid: false,
   });
+  const [followUpModalOpen, setFollowUpModalOpen] = useState(false);
+  const [selectedExpiration, setSelectedExpiration] = useState<ExpirationWithNotes | null>(null);
   const [pageSize, setPageSize] = useState(10);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [showColumnDropdown, setShowColumnDropdown] = useState(false);
@@ -252,37 +255,18 @@ export const DataTable: React.FC<DataTableProps> = ({
             return <span className="text-gray-400 text-sm">-</span>;
           }
           
-          // Sort by date descending
-          const sortedFollowUps = [...followUps].sort((a, b) => 
-            new Date(b.date).getTime() - new Date(a.date).getTime()
-          );
-          
           return (
-            <div className="group relative inline-block h-10 flex items-center">
-              <button className="px-3 py-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-sm font-bold rounded-full hover:from-blue-600 hover:to-purple-600 transition-all shadow-sm hover:shadow-md">
+            <div className="h-10 flex items-center">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevent row click
+                  setSelectedExpiration(row.original);
+                  setFollowUpModalOpen(true);
+                }}
+                className="px-3 py-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-sm font-bold rounded-full hover:from-blue-600 hover:to-purple-600 transition-all shadow-sm hover:shadow-md"
+              >
                 {followUps.length}
               </button>
-              
-              {/* Popover on hover */}
-              <div className="absolute left-0 top-full mt-2 w-96 bg-white rounded-xl shadow-2xl border-2 border-gray-200 p-4 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 max-h-80 overflow-y-auto">
-                <div className="space-y-3">
-                  <div className="font-semibold text-gray-900 border-b pb-2 mb-2">
-                    All Follow-ups ({followUps.length})
-                  </div>
-                  {sortedFollowUps.map((followUp, idx) => (
-                    <div key={idx} className="border-l-4 border-blue-500 pl-3 py-2 bg-gray-50 rounded">
-                      <div className="text-sm text-gray-900 font-medium mb-1">
-                        {followUp.comment}
-                      </div>
-                      <div className="text-xs text-gray-500 flex items-center gap-2">
-                        <span>{formatDateIST(followUp.date)}</span>
-                        <span>•</span>
-                        <span>{followUp.associateName || 'Unknown'}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
           );
         },
@@ -616,6 +600,13 @@ export const DataTable: React.FC<DataTableProps> = ({
           </div>
         </div>
       </div>
+      
+      {/* Follow-Up Modal */}
+      <FollowUpModal
+        isOpen={followUpModalOpen}
+        onClose={() => setFollowUpModalOpen(false)}
+        expiration={selectedExpiration}
+      />
     </div>
   );
 };
