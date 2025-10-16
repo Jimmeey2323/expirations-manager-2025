@@ -78,7 +78,6 @@ export const MetricCards: React.FC<MetricCardsProps> = ({ data }) => {
       value: metrics.lapsedThisMonth,
       icon: TrendingDown,
       gradient: 'from-red-500 to-pink-500',
-      iconColor: 'text-red-600',
     },
     {
       title: 'Upcoming Renewals',
@@ -86,28 +85,24 @@ export const MetricCards: React.FC<MetricCardsProps> = ({ data }) => {
       value: metrics.upcomingRenewals,
       icon: Clock,
       gradient: 'from-yellow-500 to-orange-500',
-      iconColor: 'text-orange-600',
     },
     {
       title: 'Lapsed Last Month',
       value: metrics.lapsedLastMonth,
       icon: AlertCircle,
       gradient: 'from-orange-500 to-red-500',
-      iconColor: 'text-orange-600',
     },
     {
       title: 'Lapsed This Quarter',
       value: metrics.lapsedThisQuarter,
       icon: Calendar,
       gradient: 'from-purple-500 to-pink-500',
-      iconColor: 'text-purple-600',
     },
     {
       title: 'Upcoming Next Month',
       value: metrics.upcomingNextMonth,
       icon: CalendarClock,
       gradient: 'from-blue-500 to-purple-500',
-      iconColor: 'text-blue-600',
     },
   ];
 
@@ -118,24 +113,33 @@ export const MetricCards: React.FC<MetricCardsProps> = ({ data }) => {
         return (
           <div
             key={index}
-            className="bg-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all border border-gray-100"
+            className="group relative bg-white rounded-xl p-4 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-200 hover:border-transparent overflow-hidden"
           >
-            <div className="flex items-center justify-between mb-2">
-              <div className={`p-2 rounded-lg bg-gradient-to-br ${card.gradient} bg-opacity-10`}>
-                <Icon className={card.iconColor} size={20} />
+            {/* Gradient overlay on hover */}
+            <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-xl`} />
+            
+            {/* Content */}
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-3">
+                <div className={`p-2.5 rounded-lg bg-gradient-to-br ${card.gradient} shadow-sm`}>
+                  <Icon className="text-white" size={20} />
+                </div>
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
+                  {card.title}
+                </p>
+                {card.subtitle && (
+                  <p className="text-xs text-gray-400 mb-2">{card.subtitle}</p>
+                )}
+                <p className={`text-3xl font-bold bg-gradient-to-r ${card.gradient} bg-clip-text text-transparent leading-none`}>
+                  {card.value}
+                </p>
               </div>
             </div>
-            <div>
-              <p className="text-xs font-medium text-gray-600 mb-1">
-                {card.title}
-              </p>
-              {card.subtitle && (
-                <p className="text-xs text-gray-400 mb-1">{card.subtitle}</p>
-              )}
-              <p className={`text-2xl font-bold bg-gradient-to-r ${card.gradient} bg-clip-text text-transparent`}>
-                {card.value}
-              </p>
-            </div>
+            
+            {/* Bottom accent line */}
+            <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${card.gradient} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300`} />
           </div>
         );
       })}
