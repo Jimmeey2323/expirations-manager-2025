@@ -43,7 +43,8 @@ export const STAGES = [
   'Overcrowded classes or long waitlists',
   'Maintenance or cleanliness concerns',
   'Difficulty booking classes',
-  'No clear renewal reminder or follow-up'
+  'No clear renewal reminder or follow-up',
+  'None of the Above'
 ];
 
 export const STATUSES = [

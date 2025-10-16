@@ -243,31 +243,45 @@ export const DataTable: React.FC<DataTableProps> = ({
       },
       {
         accessorKey: 'notes.followUps',
-        header: 'Latest Follow-up',
-        size: 300, // Make column wider
-        enableHiding: false, // Prevent hiding this column
+        header: 'Follow-ups',
+        size: 120,
+        enableHiding: false,
         cell: ({ row }) => {
           const followUps = row.original.notes?.followUps || [];
-          if (followUps.length === 0) return <span className="text-gray-400">No comments</span>;
+          if (followUps.length === 0) {
+            return <span className="text-gray-400 text-sm">-</span>;
+          }
           
-          // Sort by date descending to get the latest
+          // Sort by date descending
           const sortedFollowUps = [...followUps].sort((a, b) => 
             new Date(b.date).getTime() - new Date(a.date).getTime()
           );
-          const latest = sortedFollowUps[0];
           
           return (
-            <div className="text-sm min-w-[250px]">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">
-                  {followUps.length} {followUps.length === 1 ? 'comment' : 'comments'}
-                </span>
-              </div>
-              <div className="text-gray-900 font-medium max-w-xs truncate" title={latest.comment}>
-                {latest.comment}
-              </div>
-              <div className="text-xs text-gray-500 mt-1">
-                {formatDateIST(latest.date)} • {latest.associateName || 'Unknown'}
+            <div className="group relative inline-block h-10 flex items-center">
+              <button className="px-3 py-1 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-sm font-bold rounded-full hover:from-blue-600 hover:to-purple-600 transition-all shadow-sm hover:shadow-md">
+                {followUps.length}
+              </button>
+              
+              {/* Popover on hover */}
+              <div className="absolute left-0 top-full mt-2 w-96 bg-white rounded-xl shadow-2xl border-2 border-gray-200 p-4 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 max-h-80 overflow-y-auto">
+                <div className="space-y-3">
+                  <div className="font-semibold text-gray-900 border-b pb-2 mb-2">
+                    All Follow-ups ({followUps.length})
+                  </div>
+                  {sortedFollowUps.map((followUp, idx) => (
+                    <div key={idx} className="border-l-4 border-blue-500 pl-3 py-2 bg-gray-50 rounded">
+                      <div className="text-sm text-gray-900 font-medium mb-1">
+                        {followUp.comment}
+                      </div>
+                      <div className="text-xs text-gray-500 flex items-center gap-2">
+                        <span>{formatDateIST(followUp.date)}</span>
+                        <span>•</span>
+                        <span>{followUp.associateName || 'Unknown'}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           );

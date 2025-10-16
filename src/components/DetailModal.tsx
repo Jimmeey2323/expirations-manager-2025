@@ -52,6 +52,20 @@ export const DetailModal: React.FC = () => {
 
   const [newTag, setNewTag] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [customReason, setCustomReason] = useState('');
+  const [showCustomReasonError, setShowCustomReasonError] = useState(false);
+
+  // Handle ESC key to close modal
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isDetailModalOpen) {
+        closeDetailModal();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscKey);
+    return () => document.removeEventListener('keydown', handleEscKey);
+  }, [isDetailModalOpen, closeDetailModal]);
 
   useEffect(() => {
     if (selectedExpiration) {
@@ -65,15 +79,43 @@ export const DetailModal: React.FC = () => {
         internalNotes: selectedExpiration.notes?.internalNotes || '',
         tags: selectedExpiration.notes?.tags || [],
       });
+      // Check if stage is a custom reason (not in predefined list)
+      if (selectedExpiration.notes?.stage && !STAGES.includes(selectedExpiration.notes.stage)) {
+        setCustomReason(selectedExpiration.notes.stage);
+        setFormData(prev => ({ ...prev, stage: 'None of the Above' }));
+      }
     }
   }, [selectedExpiration]);
 
   if (!selectedExpiration) return null;
 
   const handleSave = async () => {
+    // Validate Associate Name is filled
+    if (!formData.associateName || formData.associateName.trim() === '') {
+      alert('Please select an Assigned Associate before saving.');
+      return;
+    }
+
+    // Validate custom reason if "None of the Above" is selected
+    if (formData.stage === 'None of the Above') {
+      if (!customReason || customReason.trim() === '') {
+        setShowCustomReasonError(true);
+        alert('Please provide a custom reason for lapsing.');
+        return;
+      }
+    }
+
     setIsSaving(true);
+    setShowCustomReasonError(false);
+    
     try {
-      await saveNote(selectedExpiration.uniqueId, formData);
+      // Use custom reason if "None of the Above" is selected
+      const dataToSave = {
+        ...formData,
+        stage: formData.stage === 'None of the Above' ? customReason : formData.stage,
+      };
+      
+      await saveNote(selectedExpiration.uniqueId, dataToSave);
       closeDetailModal();
     } catch (error) {
       console.error('Failed to save note:', error);
@@ -94,6 +136,12 @@ export const DetailModal: React.FC = () => {
   };
 
   const handleAddFollowUp = () => {
+    // Validate Associate Name
+    if (!formData.associateName || formData.associateName.trim() === '') {
+      alert('Please select an Assigned Associate before adding a follow-up.');
+      return;
+    }
+
     if (newFollowUp.comment?.trim()) {
       const followUpEntry: FollowUpEntry = {
         date: new Date().toISOString().split('T')[0], // Auto-set current date
@@ -163,29 +211,26 @@ export const DetailModal: React.FC = () => {
         </div>
 
         {/* Tabs */}
-        <div className="border-b border-gray-200 bg-gray-50">
-          <div className="flex px-6">
+        <div className="border-b border-gray-200 bg-white">
+          <div className="flex px-6 gap-2">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-3 font-medium transition-all relative ${
+                  className={`flex items-center gap-2 px-4 py-3 font-medium transition-all relative rounded-t-xl ${
                     activeTab === tab.id
-                      ? 'text-white'
-                      : 'text-gray-600 hover:text-gray-900'
+                      ? 'text-white bg-gradient-to-r from-blue-600 to-purple-600 shadow-md'
+                      : 'text-gray-600 hover:text-gray-900 border-2 border-gray-300 border-b-0 hover:border-gray-400'
                   }`}
                 >
-                  <Icon size={18} className={activeTab === tab.id ? 'text-white' : 'text-gray-600'} />
+                  <Icon size={18} />
                   {tab.label}
                   {tab.count !== undefined && tab.count > 0 && (
                     <span className={`${activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-blue-100 text-blue-700'} text-xs font-bold px-2 py-0.5 rounded-full`}>
                       {tab.count}
                     </span>
-                  )}
-                  {activeTab === tab.id && (
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-t-xl -z-10" />
                   )}
                 </button>
               );
@@ -354,14 +399,41 @@ export const DetailModal: React.FC = () => {
                       value={formData.associateName || ''}
                       onChange={(value) => setFormData({ ...formData, associateName: value })}
                       placeholder="Select associate..."
+                      required
                     />
-                    <Select
-                      label="Reasons for Lapsing"
-                      options={STAGES}
-                      value={formData.stage || ''}
-                      onChange={(value) => setFormData({ ...formData, stage: value })}
-                      placeholder="Select reason..."
-                    />
+                    <div>
+                      <Select
+                        label="Reasons for Lapsing"
+                        options={STAGES}
+                        value={formData.stage || ''}
+                        onChange={(value) => {
+                          setFormData({ ...formData, stage: value });
+                          if (value !== 'None of the Above') {
+                            setCustomReason('');
+                            setShowCustomReasonError(false);
+                          }
+                        }}
+                        placeholder="Select reason..."
+                      />
+                      {formData.stage === 'None of the Above' && (
+                        <div className="mt-2">
+                          <Textarea
+                            label="Custom Reason (Required)"
+                            value={customReason}
+                            onChange={(e) => {
+                              setCustomReason(e.target.value);
+                              setShowCustomReasonError(false);
+                            }}
+                            placeholder="Please specify the reason for lapsing..."
+                            rows={2}
+                            className={showCustomReasonError ? 'border-red-500' : ''}
+                          />
+                          {showCustomReasonError && (
+                            <p className="text-red-500 text-xs mt-1">Custom reason is required</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
                     <Select
                       label="Current Stage"
                       options={STATUSES}
