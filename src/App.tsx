@@ -3,6 +3,7 @@ import { useAppStore } from './store/useAppStore';
 import { FilterPanel } from './components/FilterPanel';
 import { DataTable } from './components/DataTable';
 import { DetailModal } from './components/DetailModal';
+import { MetricCards } from './components/MetricCards';
 import { applyFilters, groupData } from './utils/dataHelpers';
 import { 
   RefreshCw, 
@@ -208,6 +209,9 @@ function App() {
             <p className="font-medium">Error: {error}</p>
           </div>
         )}
+
+        {/* Metric Cards */}
+        <MetricCards data={filteredData} />
 
         {/* Filter Panel */}
         <FilterPanel />
