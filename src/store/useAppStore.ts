@@ -1,9 +1,13 @@
 import { create } from 'zustand';
-import { Expiration, ExpirationNote, ExpirationWithNotes, FilterState, GroupingOption, ViewMode } from '../types';
+import { Expiration, ExpirationNote, ExpirationWithNotes, FilterState, GroupingOption, ViewMode, AuthUser } from '../types';
 import { googleSheetsService } from '../services/googleSheets';
 import { getPriority } from '../utils/priorityHelper';
 
 interface AppState {
+  // Auth
+  user: AuthUser | null;
+  isAuthenticated: boolean;
+  
   // Data
   expirations: Expiration[];
   notes: ExpirationNote[];
@@ -22,6 +26,8 @@ interface AppState {
   isFilterCollapsed: boolean;
   
   // Actions
+  setUser: (user: AuthUser | null) => void;
+  logout: () => void;
   fetchData: () => Promise<void>;
   saveNote: (expirationId: string, note: Partial<ExpirationNote>) => Promise<void>;
   deleteNote: (expirationId: string) => Promise<void>;
@@ -36,6 +42,8 @@ interface AppState {
 
 export const useAppStore = create<AppState>((set, get) => ({
   // Initial state
+  user: null,
+  isAuthenticated: false,
   expirations: [],
   notes: [],
   combinedData: [],
@@ -49,6 +57,11 @@ export const useAppStore = create<AppState>((set, get) => ({
   groupBy: 'none',
   viewMode: 'table',
   isFilterCollapsed: true,
+
+  // Auth actions
+  setUser: (user) => set({ user, isAuthenticated: !!user }),
+  
+  logout: () => set({ user: null, isAuthenticated: false }),
 
   // Fetch data from Google Sheets
   fetchData: async () => {

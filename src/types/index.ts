@@ -78,3 +78,11 @@ export type GroupingOption =
 
 // View modes
 export type ViewMode = 'table' | 'compact' | 'cards';
+
+// Auth user
+export interface AuthUser {
+  email: string;
+  name?: string;
+  isAdmin: boolean;
+  associateName?: string; // Mapped associate name for filtering
+}

@@ -4,7 +4,10 @@ import { FilterPanel } from './components/FilterPanel';
 import { DataTable } from './components/DataTable';
 import { DetailModal } from './components/DetailModal';
 import { MetricCards } from './components/MetricCards';
+import { Login } from './components/Login';
 import { applyFilters, groupData } from './utils/dataHelpers';
+import { supabase } from './config/supabase';
+import { ASSOCIATES } from './constants/dropdownOptions';
 import { 
   RefreshCw, 
   Database, 
@@ -12,6 +15,8 @@ import {
   Layers,
   Search,
   X,
+  LogOut,
+  User,
 } from 'lucide-react';
 import { GroupingOption } from './types';
 
@@ -24,6 +29,10 @@ const LOCATIONS = [
 
 function App() {
   const {
+    user,
+    isAuthenticated,
+    setUser,
+    logout,
     combinedData,
     isLoading,
     error,
@@ -39,14 +48,88 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [quickFilter, setQuickFilter] = useState<'all' | 'next7' | 'next30' | 'past7' | 'past30' | 'thisMonth'>('all');
 
+  // Check for existing Supabase session
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        // Map email to associate name
+        const email = session.user.email || '';
+        const associateName = mapEmailToAssociate(email);
+        
+        setUser({
+          email,
+          name: session.user.user_metadata?.full_name || session.user.email,
+          isAdmin: false,
+          associateName,
+        });
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        const email = session.user.email || '';
+        const associateName = mapEmailToAssociate(email);
+        
+        setUser({
+          email,
+          name: session.user.user_metadata?.full_name || session.user.email,
+          isAdmin: false,
+          associateName,
+        });
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [setUser]);
+
+  // Map email to associate name (you can customize this mapping)
+  const mapEmailToAssociate = (email: string): string | undefined => {
+    // You can add custom email-to-associate mappings here
+    // For now, try to match against ASSOCIATES list
+    const emailName = email.split('@')[0].toLowerCase();
+    const found = ASSOCIATES.find(assoc => 
+      assoc.toLowerCase().includes(emailName) || 
+      emailName.includes(assoc.toLowerCase().split(' ')[0])
+    );
+    return found;
+  };
+
+  // Handle logout
+  const handleLogout = async () => {
+    if (user?.isAdmin) {
+      logout();
+    } else {
+      await supabase.auth.signOut();
+      logout();
+    }
+  };
+
   // Initial data fetch
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    if (isAuthenticated) {
+      fetchData();
+    }
+  }, [isAuthenticated, fetchData]);
 
-  // Apply filters to data with location filter
+  // Apply filters to data with location filter AND user-based filtering
   const filteredData = useMemo(() => {
+    if (!isAuthenticated) return [];
+    
     let data = applyFilters(combinedData, filters);
+    
+    // Filter by user's associate name (unless admin)
+    if (!user?.isAdmin && user?.associateName) {
+      data = data.filter(item => {
+        const sheetAssociate = item.assignedAssociate;
+        const notesAssociate = item.notes?.associateName;
+        const itemAssociate = (sheetAssociate && sheetAssociate !== '-') ? sheetAssociate : notesAssociate;
+        return itemAssociate === user.associateName;
+      });
+    }
     
     // Apply location filter
     if (activeLocation !== 'all') {
@@ -101,12 +184,17 @@ function App() {
     }
     
     return data;
-  }, [combinedData, filters, activeLocation, searchTerm, quickFilter]);
+  }, [isAuthenticated, combinedData, filters, activeLocation, searchTerm, quickFilter, user]);
 
   // Group data
   const groupedData = useMemo(() => {
     return groupData(filteredData, groupBy);
   }, [filteredData, groupBy]);
+
+  // Show login page if not authenticated
+  if (!isAuthenticated) {
+    return <Login />;
+  }
 
   const handleRefresh = async () => {
     await fetchData();
@@ -155,6 +243,26 @@ function App() {
               </div>
             </div>
             <div className="flex items-center gap-3">
+              {/* User info */}
+              <div className="flex items-center gap-2 px-4 py-2 bg-slate-800/50 rounded-xl border border-slate-700">
+                <User size={16} className="text-blue-400" />
+                <div className="text-sm">
+                  <p className="font-semibold text-white">{user?.name || user?.email}</p>
+                  {user?.isAdmin && (
+                    <p className="text-xs text-emerald-400 font-medium">Administrator</p>
+                  )}
+                  {!user?.isAdmin && user?.associateName && (
+                    <p className="text-xs text-purple-300">{user.associateName}</p>
+                  )}
+                </div>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+              >
+                <LogOut size={18} />
+                Logout
+              </button>
               <button
                 onClick={handleInitializeNotes}
                 disabled={isLoading}
