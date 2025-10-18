@@ -16,6 +16,8 @@ export interface Expiration {
   frozen: string;
   paid: string;
   status: string;
+  revenue?: string; // Revenue from sheet (column 17)
+  assignedAssociate?: string; // Assigned Associate from sheet (column 18)
 }
 
 // Follow-up entry structure

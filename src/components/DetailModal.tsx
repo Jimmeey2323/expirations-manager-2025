@@ -70,8 +70,13 @@ export const DetailModal: React.FC = () => {
 
   useEffect(() => {
     if (selectedExpiration) {
+      // Prefer sheet's assignedAssociate over notes' associateName
+      const sheetAssociate = selectedExpiration.assignedAssociate;
+      const hasSheetAssociate = sheetAssociate && sheetAssociate !== '-';
+      const associateName = hasSheetAssociate ? sheetAssociate : (selectedExpiration.notes?.associateName || '');
+      
       setFormData({
-        associateName: selectedExpiration.notes?.associateName || '',
+        associateName,
         stage: selectedExpiration.notes?.stage || '',
         status: selectedExpiration.notes?.status || '',
         priority: selectedExpiration.notes?.priority || '',
@@ -402,13 +407,21 @@ export const DetailModal: React.FC = () => {
                 <CardHeader icon={<TrendingUp size={20} />} title="Tracking & Assignment" />
                 <CardBody>
                   <div className="grid grid-cols-2 gap-4">
-                    <Select
-                      label="Assigned Associate"
-                      options={ASSOCIATES}
-                      value={formData.associateName || ''}
-                      onChange={(value) => setFormData({ ...formData, associateName: value })}
-                      placeholder="Select associate..."
-                    />
+                    <div>
+                      <Select
+                        label="Assigned Associate"
+                        options={ASSOCIATES}
+                        value={formData.associateName || ''}
+                        onChange={(value) => setFormData({ ...formData, associateName: value })}
+                        placeholder="Select associate..."
+                        disabled={!!(selectedExpiration.assignedAssociate && selectedExpiration.assignedAssociate !== '-')}
+                      />
+                      {selectedExpiration.assignedAssociate && selectedExpiration.assignedAssociate !== '-' && (
+                        <p className="text-xs text-gray-500 mt-1 italic">
+                          This value is set from the sheet and cannot be modified here.
+                        </p>
+                      )}
+                    </div>
                     <div>
                       <Select
                         label="Reasons for Lapsing"

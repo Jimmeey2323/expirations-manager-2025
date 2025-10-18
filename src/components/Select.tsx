@@ -9,6 +9,7 @@ interface SelectProps {
   placeholder?: string;
   className?: string;
   required?: boolean;
+  disabled?: boolean;
 }
 
 export const Select: React.FC<SelectProps> = ({
@@ -19,6 +20,7 @@ export const Select: React.FC<SelectProps> = ({
   placeholder = 'Select an option',
   className = '',
   required = false,
+  disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -44,8 +46,11 @@ export const Select: React.FC<SelectProps> = ({
       )}
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-left focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 hover:border-gray-300 transition-all shadow-sm"
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        disabled={disabled}
+        className={`w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl text-left focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 hover:border-gray-300 transition-all shadow-sm ${
+          disabled ? 'opacity-60 cursor-not-allowed bg-gray-50' : ''
+        }`}
       >
         <div className="flex items-center justify-between">
           <span className={value ? 'text-gray-900 font-medium' : 'text-gray-400'}>

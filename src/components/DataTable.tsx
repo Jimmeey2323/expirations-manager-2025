@@ -179,6 +179,18 @@ export const DataTable: React.FC<DataTableProps> = ({
         },
       },
       {
+        accessorKey: 'revenue',
+        header: 'Revenue',
+        cell: ({ getValue }) => {
+          const value = getValue() as string;
+          return (
+            <div className="text-sm font-semibold text-green-700">
+              {value && value !== '-' ? `₹${value}` : '-'}
+            </div>
+          );
+        },
+      },
+      {
         accessorKey: 'status',
         header: 'Member Status',
         cell: ({ getValue }) => <MemberStatusBadge status={getValue() as string} />,
@@ -186,11 +198,18 @@ export const DataTable: React.FC<DataTableProps> = ({
       {
         accessorKey: 'notes.associateName',
         header: 'Associate',
-        cell: ({ row }) => (
-          <div className="text-sm font-medium text-indigo-700">
-            {row.original.notes?.associateName || '-'}
-          </div>
-        ),
+        cell: ({ row }) => {
+          // Prefer sheet value over notes value
+          const sheetAssociate = row.original.assignedAssociate;
+          const notesAssociate = row.original.notes?.associateName;
+          const displayValue = (sheetAssociate && sheetAssociate !== '-') ? sheetAssociate : (notesAssociate || '-');
+          
+          return (
+            <div className="text-sm font-medium text-indigo-700">
+              {displayValue}
+            </div>
+          );
+        },
       },
       {
         accessorKey: 'notes.stage',

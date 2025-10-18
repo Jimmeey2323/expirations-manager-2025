@@ -37,8 +37,8 @@ class GoogleSheetsService {
   // Fetch expirations from the Expirations sheet (new format)
   async fetchExpirations(): Promise<Expiration[]> {
     const token = await this.getAccessToken();
-    // Columns A:P (16 columns)
-    const range = `${EXPIRATIONS_SHEET}!A:P`;
+    // Columns A:R (18 columns - includes Revenue and Assigned Associate)
+    const range = `${EXPIRATIONS_SHEET}!A:R`;
 
     try {
       const response = await axios.get(
@@ -73,6 +73,8 @@ class GoogleSheetsService {
         frozen: row[13] || '',
         paid: row[14] || '',
         status: row[15] || '',
+        revenue: row[16] || '',
+        assignedAssociate: row[17] || '',
       }));
     } catch (error) {
       console.error('Failed to fetch expirations:', error);
