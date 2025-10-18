@@ -5,7 +5,8 @@ import {
   Calendar, 
   AlertCircle,
   Clock,
-  CalendarClock
+  CalendarClock,
+  DollarSign
 } from 'lucide-react';
 
 interface MetricCardsProps {
@@ -13,6 +14,22 @@ interface MetricCardsProps {
 }
 
 export const MetricCards: React.FC<MetricCardsProps> = ({ data }) => {
+  // Format large numbers with L/Cr/K notation
+  const formatRevenue = (amount: number): string => {
+    if (amount >= 10000000) {
+      // Crores (1 Cr = 10,000,000)
+      return `₹${(amount / 10000000).toFixed(1)}Cr`;
+    } else if (amount >= 100000) {
+      // Lakhs (1 L = 100,000)
+      return `₹${(amount / 100000).toFixed(1)}L`;
+    } else if (amount >= 1000) {
+      // Thousands (1 K = 1,000)
+      return `₹${(amount / 1000).toFixed(1)}K`;
+    } else {
+      return `₹${amount.toFixed(1)}`;
+    }
+  };
+
   const metrics = useMemo(() => {
     const now = new Date();
     now.setHours(0, 0, 0, 0);
@@ -63,16 +80,30 @@ export const MetricCards: React.FC<MetricCardsProps> = ({ data }) => {
       return endDate >= startOfNextMonth && endDate <= endOfNextMonth;
     }).length;
     
+    // Calculate total revenue projection
+    const totalRevenue = data.reduce((sum, item) => {
+      const revenue = parseFloat(item.revenue || '0');
+      return sum + (isNaN(revenue) ? 0 : revenue);
+    }, 0);
+    
     return {
       lapsedThisMonth,
       upcomingRenewals,
       lapsedLastMonth,
       lapsedThisQuarter,
       upcomingNextMonth,
+      totalRevenue,
     };
   }, [data]);
 
   const cards = [
+    {
+      title: 'Revenue Projection',
+      value: formatRevenue(metrics.totalRevenue),
+      icon: DollarSign,
+      gradient: 'from-green-500 to-emerald-500',
+      isRevenue: true,
+    },
     {
       title: 'Lapsed This Month',
       value: metrics.lapsedThisMonth,
@@ -107,7 +138,7 @@ export const MetricCards: React.FC<MetricCardsProps> = ({ data }) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
       {cards.map((card, index) => {
         const Icon = card.icon;
         return (

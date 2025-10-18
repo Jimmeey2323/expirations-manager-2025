@@ -131,7 +131,10 @@ export const groupData = (
         key = item.notes?.priority || 'No Priority';
         break;
       case 'associateName':
-        key = item.notes?.associateName || 'Unassigned';
+        // Prefer sheet value over notes value
+        const sheetAssociate = item.assignedAssociate;
+        const notesAssociate = item.notes?.associateName;
+        key = (sheetAssociate && sheetAssociate !== '-') ? sheetAssociate : (notesAssociate || 'Unassigned');
         break;
       default:
         key = 'Uncategorized';

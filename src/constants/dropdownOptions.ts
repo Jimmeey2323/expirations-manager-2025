@@ -48,11 +48,10 @@ export const STAGES = [
 ];
 
 export const STATUSES = [
-  'Active',
-  'Pending',
-  'Completed',
-  'Cancelled',
-  'On Hold'
+  'Lapsed (<60 Days)',
+  'Renewed',
+  'Travelling - Will renew soon',
+  'Lost (>60 Days)'
 ];
 
 export const PRIORITIES = [

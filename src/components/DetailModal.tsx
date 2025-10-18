@@ -96,6 +96,12 @@ export const DetailModal: React.FC = () => {
   if (!selectedExpiration) return null;
 
   const handleSave = async () => {
+    // Validate Current Status is filled
+    if (!formData.status || formData.status.trim() === '') {
+      alert('Please select a Current Status before saving.');
+      return;
+    }
+
     // Validate custom reason if "None of the Above" is selected
     if (formData.stage === 'None of the Above') {
       if (!customReason || customReason.trim() === '') {
@@ -201,7 +207,7 @@ export const DetailModal: React.FC = () => {
   ];
 
   return (
-    <Modal isOpen={isDetailModalOpen} onClose={closeDetailModal} size="lg">
+    <Modal isOpen={isDetailModalOpen} onClose={closeDetailModal} size="xl">
       <div className="flex flex-col h-full max-h-[98vh]">
         {/* Header */}
         <div className="bg-gradient-to-r from-slate-900 via-gray-900 to-black text-white px-6 py-6 rounded-t-xl">
@@ -418,7 +424,7 @@ export const DetailModal: React.FC = () => {
                       />
                       {selectedExpiration.assignedAssociate && selectedExpiration.assignedAssociate !== '-' && (
                         <p className="text-xs text-gray-500 mt-1 italic">
-                          This value is set from the sheet and cannot be modified here.
+                          This value is pre-populated and cannot be modified here.
                         </p>
                       )}
                     </div>
@@ -456,11 +462,12 @@ export const DetailModal: React.FC = () => {
                       )}
                     </div>
                     <Select
-                      label="Current Stage"
+                      label="Current Stage (Required)"
                       options={STATUSES}
                       value={formData.status || ''}
                       onChange={(value) => setFormData({ ...formData, status: value })}
                       placeholder="Select stage..."
+                      required
                     />
                     <Select
                       label="Priority"
