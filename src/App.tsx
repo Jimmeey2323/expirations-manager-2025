@@ -52,14 +52,32 @@ function App() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
-        // Map email to associate name
         const email = session.user.email || '';
+        const emailLower = email.toLowerCase();
+        
+        // WHITELIST: Allow specific Gmail address
+        const isWhitelistedGmail = emailLower === 'jimmygonda@gmail.com';
+        
+        // DOMAIN VALIDATION: Only allow physique57 emails OR whitelisted Gmail
+        if (!emailLower.includes('physique57') && !isWhitelistedGmail) {
+          console.log('Unauthorized domain detected:', email);
+          supabase.auth.signOut();
+          alert('Access denied. Only authorized emails are allowed.');
+          return;
+        }
+        
+        // AUTO-ADMIN: physique57india domain gets admin access (except info@physique57india.com)
+        const isAdminDomain = emailLower.includes('physique57india') && 
+                             emailLower !== 'info@physique57india.com';
+        
+        // Map email to associate name
         const associateName = mapEmailToAssociate(email);
+        console.log('Email:', email, '-> Associate:', associateName, '-> isAdmin:', isAdminDomain);
         
         setUser({
           email,
           name: session.user.user_metadata?.full_name || session.user.email,
-          isAdmin: false,
+          isAdmin: isAdminDomain,
           associateName,
         });
       }
@@ -70,12 +88,31 @@ function App() {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         const email = session.user.email || '';
+        const emailLower = email.toLowerCase();
+        
+        // WHITELIST: Allow specific Gmail address
+        const isWhitelistedGmail = emailLower === 'jimmygonda@gmail.com';
+        
+        // DOMAIN VALIDATION: Only allow physique57 emails OR whitelisted Gmail
+        if (!emailLower.includes('physique57') && !isWhitelistedGmail) {
+          console.log('Unauthorized domain detected:', email);
+          supabase.auth.signOut();
+          alert('Access denied. Only authorized emails are allowed.');
+          return;
+        }
+        
+        // AUTO-ADMIN: physique57india domain gets admin access (except info@physique57india.com)
+        const isAdminDomain = emailLower.includes('physique57india') && 
+                             emailLower !== 'info@physique57india.com';
+        
+        // Map email to associate name
         const associateName = mapEmailToAssociate(email);
+        console.log('Email:', email, '-> Associate:', associateName, '-> isAdmin:', isAdminDomain);
         
         setUser({
           email,
           name: session.user.user_metadata?.full_name || session.user.email,
-          isAdmin: false,
+          isAdmin: isAdminDomain,
           associateName,
         });
       } else {
@@ -88,13 +125,37 @@ function App() {
 
   // Map email to associate name (you can customize this mapping)
   const mapEmailToAssociate = (email: string): string | undefined => {
-    // You can add custom email-to-associate mappings here
-    // For now, try to match against ASSOCIATES list
+    console.log('Mapping email to associate:', email);
+    
+    // SPECIFIC MAPPING: Whitelisted Gmail to associate
+    if (email.toLowerCase() === 'jimmygonda@gmail.com') {
+      const mappedAssociate = 'Admin Admin'; // Change this to the actual associate name from the sheet
+      console.log('Whitelisted Gmail mapped to:', mappedAssociate);
+      return mappedAssociate;
+    }
+    
+    // Extract the email name part (before @)
     const emailName = email.split('@')[0].toLowerCase();
-    const found = ASSOCIATES.find(assoc => 
-      assoc.toLowerCase().includes(emailName) || 
-      emailName.includes(assoc.toLowerCase().split(' ')[0])
-    );
+    console.log('Email name extracted:', emailName);
+    
+    // Try to find a matching associate
+    // Strategy 1: Check if associate's first name is in the email
+    let found = ASSOCIATES.find(assoc => {
+      const firstName = assoc.toLowerCase().split(' ')[0];
+      const lastName = assoc.toLowerCase().split(' ')[1] || '';
+      
+      // Check if email contains first name OR last name
+      const matches = emailName.includes(firstName) || 
+                     (lastName && emailName.includes(lastName)) ||
+                     firstName.includes(emailName);
+      
+      if (matches) {
+        console.log('Found match:', assoc, 'for email:', emailName);
+      }
+      return matches;
+    });
+    
+    console.log('Final mapped associate:', found || 'NO MATCH');
     return found;
   };
 
@@ -120,15 +181,29 @@ function App() {
     if (!isAuthenticated) return [];
     
     let data = applyFilters(combinedData, filters);
+    console.log('Total data before associate filter:', data.length);
     
     // Filter by user's associate name (unless admin)
     if (!user?.isAdmin && user?.associateName) {
+      console.log('Filtering data for associate:', user.associateName);
+      console.log('User isAdmin:', user.isAdmin);
+      
+      const beforeFilter = data.length;
       data = data.filter(item => {
         const sheetAssociate = item.assignedAssociate;
         const notesAssociate = item.notes?.associateName;
         const itemAssociate = (sheetAssociate && sheetAssociate !== '-') ? sheetAssociate : notesAssociate;
-        return itemAssociate === user.associateName;
+        
+        const matches = itemAssociate === user.associateName;
+        if (matches) {
+          console.log('Match found:', item.memberId, 'assigned to:', itemAssociate);
+        }
+        return matches;
       });
+      
+      console.log('Data after associate filter:', data.length, '(filtered from', beforeFilter, ')');
+    } else {
+      console.log('Skipping associate filter - isAdmin:', user?.isAdmin, ', associateName:', user?.associateName);
     }
     
     // Apply location filter
@@ -320,6 +395,51 @@ function App() {
 
         {/* Metric Cards */}
         <MetricCards data={filteredData} />
+
+        {/* DEBUG INFO - Shows filtering status */}
+        <div className="mb-6 bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-xl px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="text-sm">
+                <p className="font-semibold text-slate-800 mb-1">🔍 Filtering Status</p>
+                <div className="flex items-center gap-4 text-xs text-slate-600">
+                  <span>
+                    <strong>User:</strong> {user?.email}
+                  </span>
+                  <span>
+                    <strong>Role:</strong> {user?.isAdmin ? '👑 Admin (sees ALL data)' : '👤 Associate'}
+                  </span>
+                  {!user?.isAdmin && (
+                    <span>
+                      <strong>Assigned Associate:</strong> {user?.associateName || '❌ NOT MAPPED'}
+                    </span>
+                  )}
+                  <span>
+                    <strong>Total Rows Loaded:</strong> {combinedData.length}
+                  </span>
+                  <span>
+                    <strong>Visible After Filter:</strong> {filteredData.length}
+                  </span>
+                </div>
+              </div>
+            </div>
+            {!user?.isAdmin && !user?.associateName && (
+              <div className="px-4 py-2 bg-red-100 border border-red-300 rounded-lg">
+                <p className="text-xs font-semibold text-red-700">⚠️ Email not mapped to associate!</p>
+              </div>
+            )}
+            {!user?.isAdmin && user?.associateName && filteredData.length === combinedData.length && (
+              <div className="px-4 py-2 bg-yellow-100 border border-yellow-300 rounded-lg">
+                <p className="text-xs font-semibold text-yellow-700">⚠️ Filtering may not be working!</p>
+              </div>
+            )}
+            {!user?.isAdmin && user?.associateName && filteredData.length < combinedData.length && (
+              <div className="px-4 py-2 bg-green-100 border border-green-300 rounded-lg">
+                <p className="text-xs font-semibold text-green-700">✅ Filtering is working!</p>
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* Filter Panel */}
         <FilterPanel />
