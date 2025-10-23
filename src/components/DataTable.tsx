@@ -223,6 +223,7 @@ export const DataTable: React.FC<DataTableProps> = ({
       {
         accessorKey: 'notes.status',
         header: 'Current Stage',
+        size: 180,
         cell: ({ row }) => <StatusBadge status={row.original.notes?.status} />,
       },
       {
