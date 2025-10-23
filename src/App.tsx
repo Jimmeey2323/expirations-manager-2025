@@ -7,7 +7,7 @@ import { MetricCards } from './components/MetricCards';
 import { Login } from './components/Login';
 import { applyFilters, groupData } from './utils/dataHelpers';
 import { supabase } from './config/supabase';
-import { ASSOCIATES } from './constants/dropdownOptions';
+import { ASSOCIATES, ASSOCIATE_LOCATIONS } from './constants/dropdownOptions';
 import { 
   RefreshCw, 
   Database, 
@@ -47,6 +47,33 @@ function App() {
   const [activeLocation, setActiveLocation] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [quickFilter, setQuickFilter] = useState<'all' | 'next7' | 'next30' | 'past7' | 'past30' | 'thisMonth'>('all');
+
+  // Set user's default location when they log in
+  useEffect(() => {
+    if (user && !user.isAdmin && user.associateName) {
+      const userLocation = ASSOCIATE_LOCATIONS[user.associateName];
+      if (userLocation && userLocation !== 'ALL_LOCATIONS') {
+        setActiveLocation(userLocation);
+      }
+    }
+  }, [user]);
+
+  // Get available locations for the current user
+  const availableLocations = useMemo(() => {
+    if (!user || user.isAdmin || user.associateName === 'Admin Admin') {
+      // Admin can see all locations
+      return LOCATIONS;
+    }
+    
+    const userLocation = ASSOCIATE_LOCATIONS[user.associateName || ''];
+    if (userLocation && userLocation !== 'ALL_LOCATIONS') {
+      // Non-admin users can only see their location
+      return LOCATIONS.filter(loc => loc.id === userLocation || loc.id === 'all');
+    }
+    
+    // Fallback to all locations if no mapping found
+    return LOCATIONS;
+  }, [user]);
 
   // Check for existing Supabase session
   useEffect(() => {
@@ -176,7 +203,15 @@ function App() {
       });
     }
     
-    // Apply location filter
+    // Apply location-based filtering for non-admin users
+    if (!user?.isAdmin && user?.associateName) {
+      const userLocation = ASSOCIATE_LOCATIONS[user.associateName];
+      if (userLocation && userLocation !== 'ALL_LOCATIONS') {
+        data = data.filter(item => item.homeLocation === userLocation);
+      }
+    }
+    
+    // Apply location filter (for admin users or manual selection)
     if (activeLocation !== 'all') {
       data = data.filter(item => item.homeLocation === activeLocation);
     }
@@ -297,7 +332,15 @@ function App() {
                     <p className="text-xs text-emerald-400 font-medium">Administrator</p>
                   )}
                   {!user?.isAdmin && user?.associateName && (
-                    <p className="text-xs text-purple-300">{user.associateName}</p>
+                    <div className="space-y-0.5">
+                      <p className="text-xs text-purple-300">{user.associateName}</p>
+                      {ASSOCIATE_LOCATIONS[user.associateName] && ASSOCIATE_LOCATIONS[user.associateName] !== 'ALL_LOCATIONS' && (
+                        <p className="text-xs text-blue-300 flex items-center gap-1">
+                          <MapPin size={10} />
+                          {ASSOCIATE_LOCATIONS[user.associateName]}
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
@@ -333,7 +376,7 @@ function App() {
       <div className="bg-gradient-to-r from-slate-900 via-gray-900 to-black border-b border-slate-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center">
-            {LOCATIONS.map((location) => (
+            {availableLocations.map((location) => (
               <button
                 key={location.id}
                 onClick={() => setActiveLocation(location.id)}

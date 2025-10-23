@@ -19,6 +19,23 @@ export const ASSOCIATES = [
   'Zahur Shaikh'
 ];
 
+// Mapping of associates to their locations
+export const ASSOCIATE_LOCATIONS: Record<string, string> = {
+  'Akshay Rane': 'Kwality House, Kemps Corner',
+  'Zaheer Agarbattiwala': 'Kwality House, Kemps Corner',
+  'Vahishta Fitter': 'Kwality House, Kemps Corner',
+  'Shipra Bhika': 'Supreme HQ, Bandra',
+  'Imran Shaikh': 'Supreme HQ, Bandra',
+  'Nadiya Shaikh': 'Supreme HQ, Bandra',
+  'Deesha Changwani': 'Supreme HQ, Bandra',
+  'Prathap Kp': 'Kenkere House',
+  'Api Serou': 'Kenkere House',
+  'Santhosh Kumar': 'Kenkere House',
+  'Pavanthika': 'Kenkere House',
+  // Admin can see all locations
+  'Admin Admin': 'ALL_LOCATIONS'
+};
+
 export const STAGES = [
   'Busy work schedule, Travel or relocation',
   'Family or personal commitments',
