@@ -25,6 +25,7 @@ import { ASSOCIATES, STAGES, STATUSES, PRIORITIES } from '../constants/dropdownO
 import { Input, Textarea } from './Input';
 import { Select } from './Select';
 import { Button } from './Button';
+import { Card, CardHeader, CardBody } from './Card';
 
 type TabType = 'info' | 'followups' | 'notes' | 'tracking';
 
@@ -276,269 +277,373 @@ export const DetailModal: React.FC = () => {
         <div className="flex-1 overflow-y-auto bg-gray-50">
           {/* Member Info Tab */}
           {activeTab === 'info' && (
-            <div className="p-6 space-y-6">
-              {/* Quick Stats Overview */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                    <TrendingUp size={20} className="text-blue-500" />
-                    Account Overview
-                  </h2>
-                  <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">Live Data</span>
+            <div className="p-8 space-y-6">
+              {/* Member Profile Header Card */}
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+                {/* Profile Header */}
+                <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6 text-white">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+                        <User size={28} className="text-white" />
+                      </div>
+                      <div>
+                        <h1 className="text-2xl font-bold">{selectedExpiration.firstName} {selectedExpiration.lastName}</h1>
+                        <p className="text-blue-100 flex items-center gap-2 mt-1">
+                          <Mail size={16} />
+                          {selectedExpiration.email}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <MemberStatusBadge status={selectedExpiration.status} size="lg" />
+                      <p className="text-blue-100 text-sm mt-2">Member ID: {selectedExpiration.memberId}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-100">
-                    <p className="text-2xl font-bold text-blue-600">{formData.followUps?.length || 0}</p>
-                    <p className="text-xs text-blue-700 font-medium">Follow-ups</p>
-                    <p className="text-xs text-gray-500 mt-1">Total interactions</p>
+
+                {/* Quick Stats Bar */}
+                <div className="bg-gray-50 px-8 py-4 border-b border-gray-200">
+                  <div className="grid grid-cols-4 gap-6">
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-blue-600">{formData.followUps?.length || 0}</p>
+                      <p className="text-xs text-gray-500 font-medium">Follow-ups</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-purple-600">{formData.tags?.length || 0}</p>
+                      <p className="text-xs text-gray-500 font-medium">Tags</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-green-600">
+                        {selectedExpiration.paid === 'Yes' ? '✓' : '✗'}
+                      </p>
+                      <p className="text-xs text-gray-500 font-medium">Payment</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-orange-600">
+                        {Math.ceil((new Date(selectedExpiration.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}
+                      </p>
+                      <p className="text-xs text-gray-500 font-medium">Days to Expiry</p>
+                    </div>
                   </div>
-                  <div className="text-center p-4 bg-purple-50 rounded-lg border border-purple-100">
-                    <p className="text-2xl font-bold text-purple-600">{formData.tags?.length || 0}</p>
-                    <p className="text-xs text-purple-700 font-medium">Tags</p>
-                    <p className="text-xs text-gray-500 mt-1">Member labels</p>
+                </div>
+
+                {/* Profile Details Grid */}
+                <div className="p-8">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    
+                    {/* Left Column - Personal & Contact */}
+                    <div className="space-y-6">
+                      {/* Personal Information */}
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                          <User size={20} className="text-blue-500" />
+                          Personal Information
+                        </h3>
+                        <div className="space-y-4">
+                          <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span className="text-gray-600 font-medium">Full Name</span>
+                            <span className="text-gray-900 font-semibold">{selectedExpiration.firstName} {selectedExpiration.lastName}</span>
+                          </div>
+                          <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span className="text-gray-600 font-medium">Email Address</span>
+                            <span className="text-gray-900">{selectedExpiration.email}</span>
+                          </div>
+                          <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span className="text-gray-600 font-medium">Member ID</span>
+                            <span className="text-gray-900 font-mono bg-gray-100 px-2 py-1 rounded">{selectedExpiration.memberId}</span>
+                          </div>
+                          <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span className="text-gray-600 font-medium">Home Location</span>
+                            <span className="text-gray-900 flex items-center gap-1">
+                              <MapPin size={14} className="text-orange-500" />
+                              {selectedExpiration.homeLocation}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Current Status */}
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                          <TrendingUp size={20} className="text-green-500" />
+                          Current Status
+                        </h3>
+                        <div className="space-y-4">
+                          <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span className="text-gray-600 font-medium">Follow-up Stage</span>
+                            <div>
+                              {formData.status ? (
+                                <StatusBadge status={formData.status} size="sm" />
+                              ) : (
+                                <span className="text-gray-400 text-sm">Not set</span>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span className="text-gray-600 font-medium">Priority Level</span>
+                            <div>
+                              {formData.priority ? (
+                                <PriorityBadge priority={formData.priority} size="sm" />
+                              ) : (
+                                <span className="text-gray-400 text-sm">Auto-calculated</span>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span className="text-gray-600 font-medium">Assigned To</span>
+                            <span className="text-gray-900">
+                              {(selectedExpiration.assignedAssociate && selectedExpiration.assignedAssociate !== '-') 
+                                ? selectedExpiration.assignedAssociate 
+                                : formData.associateName || 'Unassigned'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right Column - Membership & Financial */}
+                    <div className="space-y-6">
+                      {/* Membership Details */}
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                          <CreditCard size={20} className="text-purple-500" />
+                          Membership Details
+                        </h3>
+                        <div className="space-y-4">
+                          <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span className="text-gray-600 font-medium">Membership Type</span>
+                            <span className="text-gray-900 font-semibold">{selectedExpiration.membershipName}</span>
+                          </div>
+                          <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span className="text-gray-600 font-medium">Expiration Date</span>
+                            <span className="text-red-600 font-semibold flex items-center gap-1">
+                              <Calendar size={14} />
+                              {format(new Date(selectedExpiration.endDate), 'MMM dd, yyyy')}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span className="text-gray-600 font-medium">Order Date</span>
+                            <span className="text-gray-900">{selectedExpiration.orderAt || 'N/A'}</span>
+                          </div>
+                          <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span className="text-gray-600 font-medium">Sold By</span>
+                            <span className="text-gray-900">{selectedExpiration.soldBy || 'N/A'}</span>
+                          </div>
+                          {selectedExpiration.revenue && (
+                            <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                              <span className="text-gray-600 font-medium">Revenue</span>
+                              <span className="text-green-600 font-semibold">{selectedExpiration.revenue}</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Account Status */}
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                          <TrendingUp size={20} className="text-indigo-500" />
+                          Account Status
+                        </h3>
+                        <div className="space-y-4">
+                          <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span className="text-gray-600 font-medium">Payment Status</span>
+                            <span className={`font-semibold ${selectedExpiration.paid === 'Yes' ? 'text-green-600' : 'text-red-600'}`}>
+                              {selectedExpiration.paid === 'Yes' ? '✅ Paid' : '❌ Unpaid'}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span className="text-gray-600 font-medium">Frozen Status</span>
+                            <span className={`font-semibold ${selectedExpiration.frozen === 'Yes' ? 'text-blue-600' : 'text-gray-600'}`}>
+                              {selectedExpiration.frozen === 'Yes' ? '🧊 Frozen' : '🔄 Active'}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span className="text-gray-600 font-medium">Usage Level</span>
+                            <span className="text-gray-900">{selectedExpiration.currentUsage || 'No data'}</span>
+                          </div>
+                          <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                            <span className="text-gray-600 font-medium">Membership ID</span>
+                            <span className="text-gray-900 font-mono bg-gray-100 px-2 py-1 rounded text-sm">{selectedExpiration.membershipId || 'N/A'}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-center p-4 bg-green-50 rounded-lg border border-green-100">
-                    <p className="text-2xl font-bold text-green-600">
-                      {selectedExpiration.paid === 'Yes' ? '✓' : '✗'}
-                    </p>
-                    <p className="text-xs text-green-700 font-medium">Payment</p>
-                    <p className="text-xs text-gray-500 mt-1">Current status</p>
-                  </div>
-                  <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-100">
-                    <p className="text-2xl font-bold text-orange-600">
-                      {Math.ceil((new Date(selectedExpiration.endDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))}
-                    </p>
-                    <p className="text-xs text-orange-700 font-medium">Days to Expiry</p>
-                    <p className="text-xs text-gray-500 mt-1">Time remaining</p>
+
+                  {/* Action Buttons */}
+                  <div className="mt-8 pt-6 border-t border-gray-200">
+                    <div className="flex flex-wrap gap-3">
+                      <Button 
+                        onClick={() => setActiveTab('tracking')} 
+                        variant="primary"
+                        className="flex-1 min-w-[200px]"
+                      >
+                        <TrendingUp size={16} className="mr-2" />
+                        Update Tracking
+                      </Button>
+                      <Button 
+                        onClick={() => setActiveTab('followups')} 
+                        variant="outline"
+                        className="flex-1 min-w-[200px]"
+                      >
+                        <MessageSquare size={16} className="mr-2" />
+                        Add Follow-up
+                      </Button>
+                      <Button 
+                        onClick={() => setActiveTab('notes')} 
+                        variant="outline"
+                        className="flex-1 min-w-[200px]"
+                      >
+                        <FileText size={16} className="mr-2" />
+                        Edit Notes
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
-
-              {/* Member Details Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                
-                {/* Left Column - Personal & Contact Information */}
+            </div>
+          )}
+                {/* Left Column */}
                 <div className="space-y-6">
                   {/* Personal Information */}
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
-                      <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                        <User size={20} className="text-blue-500" />
-                        Personal Information
-                      </h3>
-                      <p className="text-sm text-gray-600 mt-1">Basic member details and contact information</p>
-                    </div>
-                    <div className="p-6 space-y-4">
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0">
-                        <span className="text-gray-600 font-medium">Full Name</span>
-                        <span className="text-gray-900 font-semibold">{selectedExpiration.firstName} {selectedExpiration.lastName}</span>
+                  <Card>
+                    <CardHeader icon={<User size={20} />} title="Personal Information" />
+                    <CardBody>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Member ID</label>
+                          <p className="text-lg font-bold text-gray-900 bg-white px-4 py-3 rounded-xl border-l-4 border-blue-500 shadow-sm">
+                            {selectedExpiration.memberId}
+                          </p>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Full Name</label>
+                          <p className="text-lg font-bold text-gray-900 bg-white px-4 py-3 rounded-xl border-l-4 border-purple-500 shadow-sm">
+                            {selectedExpiration.firstName} {selectedExpiration.lastName}
+                          </p>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Email Address</label>
+                          <p className="text-gray-900 bg-white px-4 py-3 rounded-xl border-l-4 border-green-500 shadow-sm flex items-center gap-2">
+                            <Mail size={16} className="text-green-500" />
+                            <span className="font-medium">{selectedExpiration.email}</span>
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0">
-                        <span className="text-gray-600 font-medium">Email Address</span>
-                        <span className="text-gray-900 font-mono text-sm bg-gray-50 px-2 py-1 rounded">{selectedExpiration.email}</span>
-                      </div>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0">
-                        <span className="text-gray-600 font-medium">Member ID</span>
-                        <span className="text-gray-900 font-mono bg-blue-50 px-3 py-1 rounded border border-blue-200 text-blue-800 font-semibold">{selectedExpiration.memberId}</span>
-                      </div>
-                      <div className="flex justify-between items-center py-3">
-                        <span className="text-gray-600 font-medium">Home Location</span>
-                        <span className="text-gray-900 flex items-center gap-2">
-                          <MapPin size={14} className="text-orange-500" />
-                          <span className="font-medium">{selectedExpiration.homeLocation}</span>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                    </CardBody>
+                  </Card>
 
-                  {/* Current Tracking Status */}
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 px-6 py-4 border-b border-gray-200">
-                      <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                        <TrendingUp size={20} className="text-green-500" />
-                        Current Tracking Status
-                      </h3>
-                      <p className="text-sm text-gray-600 mt-1">Follow-up progress and assignment details</p>
-                    </div>
-                    <div className="p-6 space-y-4">
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                        <div>
-                          <span className="text-gray-600 font-medium">Follow-up Stage</span>
-                          <p className="text-xs text-gray-500">Current position in workflow</p>
-                        </div>
-                        <div>
-                          {formData.status ? (
-                            <StatusBadge status={formData.status} size="sm" />
-                          ) : (
-                            <span className="text-gray-400 text-sm bg-gray-100 px-2 py-1 rounded">Not set</span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                        <div>
-                          <span className="text-gray-600 font-medium">Priority Level</span>
-                          <p className="text-xs text-gray-500">System-calculated urgency</p>
-                        </div>
-                        <div>
-                          {formData.priority ? (
-                            <PriorityBadge priority={formData.priority} size="sm" />
-                          ) : (
-                            <span className="text-gray-400 text-sm bg-yellow-50 px-2 py-1 rounded border border-yellow-200">Auto-calculated</span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-center py-3">
-                        <div>
-                          <span className="text-gray-600 font-medium">Assigned To</span>
-                          <p className="text-xs text-gray-500">Responsible team member</p>
-                        </div>
-                        <span className="text-gray-900 font-medium">
-                          {(selectedExpiration.assignedAssociate && selectedExpiration.assignedAssociate !== '-') 
-                            ? selectedExpiration.assignedAssociate 
-                            : formData.associateName || (
-                              <span className="text-red-500 bg-red-50 px-2 py-1 rounded text-sm">Unassigned</span>
-                            )}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Right Column - Membership & Financial Information */}
-                <div className="space-y-6">
                   {/* Membership Details */}
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 px-6 py-4 border-b border-gray-200">
-                      <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                        <CreditCard size={20} className="text-purple-500" />
-                        Membership Details
-                      </h3>
-                      <p className="text-sm text-gray-600 mt-1">Subscription information and important dates</p>
-                    </div>
-                    <div className="p-6 space-y-4">
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                        <span className="text-gray-600 font-medium">Membership Type</span>
-                        <span className="text-gray-900 font-semibold bg-purple-50 px-3 py-1 rounded border border-purple-200">{selectedExpiration.membershipName}</span>
-                      </div>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                  <Card>
+                    <CardHeader icon={<CreditCard size={20} />} title="Membership Details" />
+                    <CardBody>
+                      <div className="space-y-4">
                         <div>
-                          <span className="text-gray-600 font-medium">Expiration Date</span>
-                          <p className="text-xs text-gray-500">When membership ends</p>
+                          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Membership Type</label>
+                          <p className="text-base font-bold text-gray-900 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-3 rounded-xl border border-blue-200 shadow-sm">
+                            {selectedExpiration.membershipName}
+                          </p>
                         </div>
-                        <span className="text-red-600 font-semibold flex items-center gap-1 bg-red-50 px-3 py-1 rounded border border-red-200">
-                          <Calendar size={14} />
-                          {format(new Date(selectedExpiration.endDate), 'MMM dd, yyyy')}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                        <span className="text-gray-600 font-medium">Order Date</span>
-                        <span className="text-gray-900">{selectedExpiration.orderAt || 'N/A'}</span>
-                      </div>
-                      <div className="flex justify-between items-center py-3">
-                        <span className="text-gray-600 font-medium">Sold By</span>
-                        <span className="text-gray-900">{selectedExpiration.soldBy || 'N/A'}</span>
-                      </div>
-                      {selectedExpiration.revenue && (
-                        <div className="flex justify-between items-center py-3 border-t border-gray-100">
-                          <span className="text-gray-600 font-medium">Revenue</span>
-                          <span className="text-green-600 font-semibold bg-green-50 px-3 py-1 rounded border border-green-200">{selectedExpiration.revenue}</span>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Membership ID</label>
+                            <p className="text-sm font-medium text-gray-900 bg-white px-3 py-2 rounded-xl border border-gray-200">
+                              {selectedExpiration.membershipId}
+                            </p>
+                          </div>
+                          <div>
+                            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Order ID</label>
+                            <p className="text-sm font-medium text-gray-900 bg-white px-3 py-2 rounded-xl border border-gray-200">
+                              {selectedExpiration.id}
+                            </p>
+                          </div>
                         </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Account Status */}
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="bg-gradient-to-r from-indigo-50 to-blue-50 px-6 py-4 border-b border-gray-200">
-                      <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-                        <TrendingUp size={20} className="text-indigo-500" />
-                        Account Status
-                      </h3>
-                      <p className="text-sm text-gray-600 mt-1">Payment and activity status information</p>
-                    </div>
-                    <div className="p-6 space-y-4">
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
                         <div>
-                          <span className="text-gray-600 font-medium">Payment Status</span>
-                          <p className="text-xs text-gray-500">Current payment standing</p>
+                          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">End Date</label>
+                          <p className="text-base font-bold text-red-700 bg-gradient-to-r from-red-50 to-orange-50 px-4 py-3 rounded-xl border-l-4 border-red-500 shadow-sm flex items-center gap-2">
+                            <Calendar size={18} className="text-red-500" />
+                            {selectedExpiration.endDate}
+                          </p>
                         </div>
-                        <span className={`font-semibold px-3 py-1 rounded border ${
-                          selectedExpiration.paid === 'Yes' 
-                            ? 'text-green-700 bg-green-50 border-green-200' 
-                            : 'text-red-700 bg-red-50 border-red-200'
-                        }`}>
-                          {selectedExpiration.paid === 'Yes' ? '✅ Paid' : '❌ Unpaid'}
-                        </span>
                       </div>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                        <div>
-                          <span className="text-gray-600 font-medium">Frozen Status</span>
-                          <p className="text-xs text-gray-500">Account freeze status</p>
-                        </div>
-                        <span className={`font-semibold px-3 py-1 rounded border ${
-                          selectedExpiration.frozen === 'Yes' 
-                            ? 'text-blue-700 bg-blue-50 border-blue-200' 
-                            : 'text-gray-700 bg-gray-50 border-gray-200'
-                        }`}>
-                          {selectedExpiration.frozen === 'Yes' ? '🧊 Frozen' : '🔄 Active'}
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                        <div>
-                          <span className="text-gray-600 font-medium">Usage Level</span>
-                          <p className="text-xs text-gray-500">Recent activity</p>
-                        </div>
-                        <span className="text-gray-900 bg-gray-50 px-3 py-1 rounded border border-gray-200">{selectedExpiration.currentUsage || 'No data'}</span>
-                      </div>
-                      <div className="flex justify-between items-center py-3">
-                        <span className="text-gray-600 font-medium">Membership ID</span>
-                        <span className="text-gray-900 font-mono bg-gray-50 px-3 py-1 rounded text-sm border border-gray-200">{selectedExpiration.membershipId || 'N/A'}</span>
-                      </div>
-                    </div>
-                  </div>
+                    </CardBody>
+                  </Card>
                 </div>
-              </div>
 
-              {/* Quick Actions */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-800">Quick Actions</h3>
-                  <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">Navigate to other sections</span>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Button 
-                    onClick={() => setActiveTab('tracking')} 
-                    variant="primary"
-                    className="w-full justify-start"
-                  >
-                    <TrendingUp size={16} className="mr-2" />
-                    <div className="text-left">
-                      <div className="font-medium">Update Tracking</div>
-                      <div className="text-xs opacity-75">Set stage & assignment</div>
-                    </div>
-                  </Button>
-                  <Button 
-                    onClick={() => setActiveTab('followups')} 
-                    variant="outline"
-                    className="w-full justify-start"
-                  >
-                    <MessageSquare size={16} className="mr-2" />
-                    <div className="text-left">
-                      <div className="font-medium">Add Follow-up</div>
-                      <div className="text-xs opacity-75">Log interaction</div>
-                    </div>
-                  </Button>
-                  <Button 
-                    onClick={() => setActiveTab('notes')} 
-                    variant="outline"
-                    className="w-full justify-start"
-                  >
-                    <FileText size={16} className="mr-2" />
-                    <div className="text-left">
-                      <div className="font-medium">Edit Notes</div>
-                      <div className="text-xs opacity-75">Update comments</div>
-                    </div>
-                  </Button>
+                {/* Right Column */}
+                <div className="space-y-6">
+                  {/* Location & Additional Info */}
+                  <Card>
+                    <CardHeader icon={<MapPin size={20} />} title="Location & Details" />
+                    <CardBody>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Home Location</label>
+                          <p className="text-base font-medium text-gray-900 bg-white px-4 py-3 rounded-xl border-l-4 border-orange-500 shadow-sm flex items-center gap-2">
+                            <MapPin size={18} className="text-orange-500" />
+                            {selectedExpiration.homeLocation || 'N/A'}
+                          </p>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Order Date</label>
+                            <p className="text-sm font-medium text-gray-900 bg-white px-3 py-2 rounded-xl border border-gray-200">
+                              {selectedExpiration.orderAt || 'N/A'}
+                            </p>
+                          </div>
+                          <div>
+                            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Sold By</label>
+                            <p className="text-sm font-medium text-gray-900 bg-white px-3 py-2 rounded-xl border border-gray-200 flex items-center gap-1">
+                              <Users size={14} className="text-gray-400" />
+                              <span className="truncate">{selectedExpiration.soldBy || 'N/A'}</span>
+                            </p>
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Current Usage</label>
+                          <p className="text-sm font-medium text-gray-900 bg-white px-3 py-2 rounded-xl border border-gray-200">
+                            {selectedExpiration.currentUsage || 'N/A'}
+                          </p>
+                        </div>
+                      </div>
+                    </CardBody>
+                  </Card>
+
+                  {/* Status Indicators */}
+                  <Card>
+                    <CardHeader icon={<TrendingUp size={20} />} title="Status & Payment" />
+                    <CardBody>
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Payment Status</label>
+                          <div className={`px-4 py-3 rounded-xl border-l-4 font-bold text-base shadow-sm ${
+                            selectedExpiration.paid === 'Yes' 
+                              ? 'text-green-700 bg-gradient-to-r from-green-50 to-emerald-50 border-green-500' 
+                              : 'text-red-700 bg-gradient-to-r from-red-50 to-rose-50 border-red-500'
+                          }`}>
+                            {selectedExpiration.paid === 'Yes' ? '✓ Paid' : '✗ Unpaid'}
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Frozen Status</label>
+                          <div className={`px-4 py-3 rounded-xl border-l-4 font-bold text-base shadow-sm ${
+                            selectedExpiration.frozen === 'Yes' 
+                              ? 'text-blue-700 bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-500' 
+                              : 'text-gray-700 bg-gradient-to-r from-gray-50 to-slate-50 border-gray-400'
+                          }`}>
+                            {selectedExpiration.frozen === 'Yes' ? '❄ Frozen' : '✓ Active'}
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1.5">Member Status</label>
+                          <div className="flex">
+                            <MemberStatusBadge status={selectedExpiration.status} size="lg" />
+                          </div>
+                        </div>
+                      </div>
+                    </CardBody>
+                  </Card>
                 </div>
               </div>
             </div>
