@@ -20,9 +20,9 @@ const variantStyles = {
 };
 
 const sizeStyles = {
-  sm: 'px-2 py-0.5 text-xs w-20 h-5',
-  md: 'px-3 py-1 text-xs w-24 h-6',
-  lg: 'px-4 py-1.5 text-sm w-32 h-7',
+  sm: 'px-2 py-0.5 text-xs min-w-20 h-5',
+  md: 'px-3 py-1 text-xs min-w-24 h-6',
+  lg: 'px-4 py-1.5 text-sm min-w-32 h-7',
 };
 
 export const Badge: React.FC<BadgeProps> = ({ variant, children, className = '', size = 'md' }) => {
