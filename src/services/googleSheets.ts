@@ -104,32 +104,37 @@ class GoogleSheetsService {
       const headers = rows[0];
       const dataRows = rows.slice(1);
 
-      return dataRows.map((row: string[]) => {
-        const note: any = {};
-        headers.forEach((header: string, index: number) => {
-          const value = row[index] || '';
-          
-          // Parse specific fields
-          if (header === 'tags' && value) {
-            note[header] = value.split(',').map((t: string) => t.trim());
-          } else if (header === 'followUps' && value) {
-            try {
-              note[header] = JSON.parse(value);
-            } catch {
-              note[header] = [];
+      return dataRows
+        .filter((row: string[]) => {
+          // Filter out completely empty rows or rows with empty expirationId (first column)
+          return row.length > 0 && row[0] && row[0].trim() !== '';
+        })
+        .map((row: string[]) => {
+          const note: any = {};
+          headers.forEach((header: string, index: number) => {
+            const value = row[index] || '';
+            
+            // Parse specific fields
+            if (header === 'tags' && value) {
+              note[header] = value.split(',').map((t: string) => t.trim());
+            } else if (header === 'followUps' && value) {
+              try {
+                note[header] = JSON.parse(value);
+              } catch {
+                note[header] = [];
+              }
+            } else if (header === 'customFields' && value) {
+              try {
+                note[header] = JSON.parse(value);
+              } catch {
+                note[header] = {};
+              }
+            } else {
+              note[header] = value;
             }
-          } else if (header === 'customFields' && value) {
-            try {
-              note[header] = JSON.parse(value);
-            } catch {
-              note[header] = {};
-            }
-          } else {
-            note[header] = value;
-          }
+          });
+          return note as ExpirationNote;
         });
-        return note as ExpirationNote;
-      });
     } catch (error) {
       // If Notes sheet doesn't exist or is empty, return empty array
       console.warn('Notes sheet not found or empty:', error);
