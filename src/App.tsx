@@ -17,8 +17,12 @@ import {
   X,
   LogOut,
   User,
+  Download,
+  FileText,
+  Copy,
 } from 'lucide-react';
 import { GroupingOption } from './types';
+import { exportToCSV, exportToPDF, copyToClipboard, getTimestampedFilename } from './utils/exportHelpers';
 
 const LOCATIONS = [
   { id: 'all', name: 'All Locations', icon: '🌍' },
@@ -251,6 +255,21 @@ function App() {
     }
   };
 
+  // Export handlers
+  const handleExportCSV = () => {
+    const filename = getTimestampedFilename('expirations-export', 'csv');
+    exportToCSV(filteredData, filename);
+  };
+
+  const handleExportPDF = () => {
+    const filename = getTimestampedFilename('expirations-export', 'pdf');
+    exportToPDF(filteredData, filename);
+  };
+
+  const handleCopyToClipboard = () => {
+    copyToClipboard(filteredData);
+  };
+
   const groupingOptions: { value: GroupingOption; label: string; icon: React.ReactNode }[] = [
     { value: 'none', label: 'No Grouping', icon: <Layers size={16} /> },
     { value: 'offerName', label: 'By Membership', icon: <Layers size={16} /> },
@@ -390,6 +409,40 @@ function App() {
                     {option.label}
                   </button>
                 ))}
+              </div>
+            </div>
+
+            {/* Export Options */}
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-medium text-gray-700">Export:</span>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleExportCSV}
+                  disabled={filteredData.length === 0}
+                  className="px-4 py-2 rounded-md text-sm font-medium transition-all flex items-center gap-2 shadow-sm bg-emerald-100 text-emerald-700 hover:bg-emerald-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Export as CSV"
+                >
+                  <Download size={16} />
+                  CSV
+                </button>
+                <button
+                  onClick={handleExportPDF}
+                  disabled={filteredData.length === 0}
+                  className="px-4 py-2 rounded-md text-sm font-medium transition-all flex items-center gap-2 shadow-sm bg-red-100 text-red-700 hover:bg-red-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Export as PDF"
+                >
+                  <FileText size={16} />
+                  PDF
+                </button>
+                <button
+                  onClick={handleCopyToClipboard}
+                  disabled={filteredData.length === 0}
+                  className="px-4 py-2 rounded-md text-sm font-medium transition-all flex items-center gap-2 shadow-sm bg-blue-100 text-blue-700 hover:bg-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Copy to Clipboard"
+                >
+                  <Copy size={16} />
+                  Copy
+                </button>
               </div>
             </div>
 
