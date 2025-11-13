@@ -13,3 +13,5 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 
 // Admin access code
 export const ADMIN_ACCESS_CODE = '2303';
+
+
