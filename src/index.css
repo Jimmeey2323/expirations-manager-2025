@@ -56,3 +56,28 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
 }
+
+/* Narrow modal when device is in portrait orientation (mobile) */
+@media (orientation: portrait) {
+  .portrait-narrow {
+    /* Reduce width by ~20% on portrait devices for better fit */
+    max-width: 72vw !important;
+    margin-inline: auto;
+  }
+}
+
+/* Modal slim helper used for desktop/tablet to reduce width and add refined styling */
+.modal-slim {
+  max-width: 80vw !important;
+  margin-inline: auto;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(16,24,40,0.16), 0 4px 8px rgba(16,24,40,0.06);
+}
+
+/* Slightly tighter modal content for better density */
+.modal-content-dense {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;
+}

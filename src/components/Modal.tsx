@@ -10,12 +10,12 @@ interface ModalProps {
 }
 
 const sizeClasses = {
-  sm: 'max-w-md',
-  md: 'max-w-2xl',
-  lg: 'max-w-4xl',
-  xl: 'max-w-6xl',
-  xxl: 'max-w-7xl',
-  full: 'max-w-[95vw]',
+  sm: 'max-w-sm',
+  md: 'max-w-[60vw]',
+  lg: 'max-w-[70vw]',
+  xl: 'max-w-[80vw] min-h-[82vh]',
+  xxl: 'max-w-[88vw] min-h-[90vh]',
+  full: 'max-w-[95vw] min-h-[95vh]',
 };
 
 export const Modal: React.FC<ModalProps> = ({ 
@@ -36,26 +36,26 @@ export const Modal: React.FC<ModalProps> = ({
       />
       
       {/* Modal Container */}
-      <div className="flex min-h-full items-center justify-center p-4 sm:p-6 lg:p-8">
+      <div className="flex min-h-full items-center justify-center p-3 sm:p-4 lg:p-6">
         <div 
-          className={`relative bg-white rounded-2xl shadow-2xl w-full ${sizeClasses[size]} min-h-[80vh] max-h-[95vh] animate-fadeIn border border-gray-200`}
+          className={`relative bg-white rounded-2xl modal-slim w-full portrait-narrow ${sizeClasses[size]} max-h-[94vh] animate-fadeIn border border-gray-200`}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Enhanced Header with gradient */}
-          <div className="flex items-center justify-between px-8 py-6 border-b border-gray-200 bg-gradient-to-r from-slate-50 to-gray-50 rounded-t-2xl">
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-slate-800 to-gray-800 bg-clip-text text-transparent">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-slate-50 to-gray-50 rounded-t-2xl">
+            <h2 className="text-xl font-semibold text-slate-900">
               {title}
             </h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-all duration-200 hover:bg-gray-100 rounded-xl p-2"
+              className="text-gray-400 hover:text-gray-600 transition-all duration-200 hover:bg-gray-100 rounded-lg p-2"
             >
-              <X size={24} />
+              <X size={20} />
             </button>
           </div>
           
           {/* Enhanced Content Area */}
-          <div className="px-8 py-6 max-h-[calc(95vh-180px)] overflow-y-auto custom-scrollbar">
+          <div className="px-6 py-4 max-h-[calc(94vh-140px)] overflow-y-auto custom-scrollbar modal-content-dense">
             {children}
           </div>
         </div>

@@ -34,6 +34,7 @@ export const Input: React.FC<InputProps> = ({
           className={`w-full px-4 py-3 ${icon ? 'pl-10' : ''} bg-white border-2 ${
             error ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-200 focus:border-primary-500 focus:ring-primary-500'
           } rounded-xl focus:outline-none focus:ring-2 transition-all shadow-sm placeholder-gray-400 font-medium ${className}`}
+          style={{color: 'black'}}
         />
       </div>
       {error && <p className="mt-1 text-sm text-red-600 font-medium">{error}</p>}
@@ -68,6 +69,7 @@ export const Textarea: React.FC<TextareaProps> = ({
         className={`w-full px-4 py-3 bg-white border-2 ${
           error ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-gray-200 focus:border-primary-500 focus:ring-primary-500'
         } rounded-xl focus:outline-none focus:ring-2 transition-all shadow-sm placeholder-gray-400 font-medium resize-none ${className}`}
+        style={{color: 'black'}}
       />
       {error && <p className="mt-1 text-sm text-red-600 font-medium">{error}</p>}
       {helperText && !error && <p className="mt-1 text-sm text-gray-500">{helperText}</p>}

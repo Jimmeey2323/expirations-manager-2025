@@ -206,10 +206,10 @@ export const DetailModal: React.FC = () => {
   ];
 
   return (
-    <Modal isOpen={isDetailModalOpen} onClose={closeDetailModal} size="full">
-      <div className="flex flex-col h-full max-h-[98vh]">
+    <Modal isOpen={isDetailModalOpen} onClose={closeDetailModal} size="xl">
+      <div className="flex flex-col min-h-[82vh]">
         {/* Enhanced Header with member info */}
-        <div className="bg-gradient-to-r from-slate-900 via-gray-900 to-black text-white px-8 py-8 rounded-t-2xl shadow-xl">
+        <div className="bg-gradient-to-r from-slate-900 via-gray-900 to-black text-white px-6 py-6 rounded-t-2xl shadow-xl">
           <div className="flex items-start justify-between">
             <div className="space-y-3">
               <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
@@ -242,7 +242,7 @@ export const DetailModal: React.FC = () => {
 
         {/* Enhanced Tabs */}
         <div className="border-b border-gray-300 bg-gradient-to-r from-white to-gray-50 shadow-sm">
-          <div className="flex px-8 gap-1">
+          <div className="flex px-6 gap-1">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
@@ -273,12 +273,12 @@ export const DetailModal: React.FC = () => {
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto bg-gray-50">
+        <div className="flex-1 bg-gray-50 overflow-visible">
           {/* Member Info Tab */}
           {activeTab === 'info' && (
-            <div className="p-6 space-y-6">
+            <div className="p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
               {/* Quick Stats Overview */}
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 lg:col-span-12">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
                     <TrendingUp size={20} className="text-blue-500" />
@@ -286,7 +286,7 @@ export const DetailModal: React.FC = () => {
                   </h2>
                   <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">Live Data</span>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   <div className="text-center p-4 bg-blue-50 rounded-lg border border-blue-100">
                     <p className="text-2xl font-bold text-blue-600">{formData.followUps?.length || 0}</p>
                     <p className="text-xs text-blue-700 font-medium">Follow-ups</p>
@@ -315,33 +315,33 @@ export const DetailModal: React.FC = () => {
               </div>
 
               {/* Member Details Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                
+              <div className="lg:col-span-12 grid grid-cols-1 lg:grid-cols-12 gap-4">
+
                 {/* Left Column - Personal & Contact Information */}
-                <div className="space-y-6">
+                <div className="space-y-6 col-span-1 lg:col-span-7">
                   {/* Personal Information */}
                   <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
-                      <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-4 py-3 border-b border-gray-200">
+                      <h3 className="text-md font-semibold text-gray-800 flex items-center gap-2">
                         <User size={20} className="text-blue-500" />
                         Personal Information
                       </h3>
                       <p className="text-sm text-gray-600 mt-1">Basic member details and contact information</p>
                     </div>
-                    <div className="p-6 space-y-4">
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0">
+                    <div className="p-4 space-y-3">
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
                         <span className="text-gray-600 font-medium">Full Name</span>
                         <span className="text-gray-900 font-semibold">{selectedExpiration.firstName} {selectedExpiration.lastName}</span>
                       </div>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0">
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
                         <span className="text-gray-600 font-medium">Email Address</span>
                         <span className="text-gray-900 font-mono text-sm bg-gray-50 px-2 py-1 rounded">{selectedExpiration.email}</span>
                       </div>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100 last:border-b-0">
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0">
                         <span className="text-gray-600 font-medium">Member ID</span>
                         <span className="text-gray-900 font-mono bg-blue-50 px-3 py-1 rounded border border-blue-200 text-blue-800 font-semibold">{selectedExpiration.memberId}</span>
                       </div>
-                      <div className="flex justify-between items-center py-3">
+                      <div className="flex justify-between items-center py-2">
                         <span className="text-gray-600 font-medium">Home Location</span>
                         <span className="text-gray-900 flex items-center gap-2">
                           <MapPin size={14} className="text-orange-500" />
@@ -405,22 +405,22 @@ export const DetailModal: React.FC = () => {
                 </div>
 
                 {/* Right Column - Membership & Financial Information */}
-                <div className="space-y-6">
+                <div className="space-y-6 col-span-1 lg:col-span-5">
                   {/* Membership Details */}
                   <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 px-6 py-4 border-b border-gray-200">
-                      <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 px-4 py-3 border-b border-gray-200">
+                      <h3 className="text-md font-semibold text-gray-800 flex items-center gap-2">
                         <CreditCard size={20} className="text-purple-500" />
                         Membership Details
                       </h3>
                       <p className="text-sm text-gray-600 mt-1">Subscription information and important dates</p>
                     </div>
-                    <div className="p-6 space-y-4">
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                    <div className="p-4 space-y-3">
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
                         <span className="text-gray-600 font-medium">Membership Type</span>
                         <span className="text-gray-900 font-semibold bg-purple-50 px-3 py-1 rounded border border-purple-200">{selectedExpiration.membershipName}</span>
                       </div>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
                         <div>
                           <span className="text-gray-600 font-medium">Expiration Date</span>
                           <p className="text-xs text-gray-500">When membership ends</p>
@@ -430,16 +430,16 @@ export const DetailModal: React.FC = () => {
                           {format(new Date(selectedExpiration.endDate), 'MMM dd, yyyy')}
                         </span>
                       </div>
-                      <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                      <div className="flex justify-between items-center py-2 border-b border-gray-100">
                         <span className="text-gray-600 font-medium">Order Date</span>
                         <span className="text-gray-900">{selectedExpiration.orderAt || 'N/A'}</span>
                       </div>
-                      <div className="flex justify-between items-center py-3">
+                      <div className="flex justify-between items-center py-2">
                         <span className="text-gray-600 font-medium">Sold By</span>
                         <span className="text-gray-900">{selectedExpiration.soldBy || 'N/A'}</span>
                       </div>
                       {selectedExpiration.revenue && (
-                        <div className="flex justify-between items-center py-3 border-t border-gray-100">
+                        <div className="flex justify-between items-center py-2 border-t border-gray-100">
                           <span className="text-gray-600 font-medium">Revenue</span>
                           <span className="text-green-600 font-semibold bg-green-50 px-3 py-1 rounded border border-green-200">{selectedExpiration.revenue}</span>
                         </div>
