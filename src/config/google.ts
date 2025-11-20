@@ -6,7 +6,7 @@ export const GOOGLE_CONFIG = {
   TOKEN_URL: "https://oauth2.googleapis.com/token"
 };
 
-export const SPREADSHEET_ID = import.meta.env.VITE_SPREADSHEET_ID || "";
+export const SPREADSHEET_ID = import.meta.env.VITE_SPREADSHEET_ID || "1rGMDDvvTbZfNg1dueWtRN3LhOgGQOdLg3Fd7Sn1GCZo";
 export const EXPIRATIONS_SHEET = "Expirations";
 export const NOTES_SHEET = "Notes";
 
