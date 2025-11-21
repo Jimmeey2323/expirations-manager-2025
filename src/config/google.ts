@@ -2,7 +2,7 @@
 export const GOOGLE_CONFIG = {
   CLIENT_ID: import.meta.env.VITE_GOOGLE_CLIENT_ID || "416630995185-007ermh3iidknbbtdmu5vct207mdlbaa.apps.googleusercontent.com",
   CLIENT_SECRET: import.meta.env.VITE_GOOGLE_CLIENT_SECRET || "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",
-  REFRESH_TOKEN: import.meta.env.VITE_GOOGLE_REFRESH_TOKEN || "1//04POzX5-KHjRdCgYIARAAGAQSNwF-L9Irx3KUIKNyT8M1eRKn29PbFNbBbLiO7kvvojqrc42bOMM1xSVM8NLlwkXS2ZBIp3kaH8M",
+  REFRESH_TOKEN: import.meta.env.VITE_GOOGLE_REFRESH_TOKEN || "1//045tUzUZK5YdaCgYIARAAGAQSNwF-L9IrP6WrfNCq1j2Gopc75jsLMmKH5jP1kRlFiKsaPj-DmqHtufGHNGfk5ZVQuh3ODo2M4Eo",
   TOKEN_URL: "https://oauth2.googleapis.com/token"
 };
 
